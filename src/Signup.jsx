@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Signup.css';
 
 const Signup = () => {
@@ -8,6 +9,8 @@ const Signup = () => {
     password: '',
     password2: ''
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -19,7 +22,10 @@ const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Signup data:', formData);
-    // Implement signup logic here, like making an API request
+    const flag = true;
+    if (flag) {
+        navigate('/');
+    }
   };
 
   return (

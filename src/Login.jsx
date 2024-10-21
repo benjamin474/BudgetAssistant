@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 
 const Login = () => {
@@ -7,6 +7,8 @@ const Login = () => {
     email: '',
     password: ''
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -18,7 +20,12 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Login data:', formData);
-    // Implement login logic here, like making an API request
+    const flag = true;
+    if (flag) {
+      navigate('/main');
+    } else {
+      alert('Username or password is incorrect!');
+    }
   };
 
   return (
@@ -56,7 +63,6 @@ const Login = () => {
         </button>
       </form>
 
-      {/* Forgot Password Link */}
       <div className="link">
         <Link to="/sign-up"> Sign Up</Link> | 
         <Link to="/forgot-password"> Forgot Password?</Link>
