@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const TransactionRouter = require('./routes/TransactionRoute');
+const UserRouter = require('./routes/UserRoute');
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -13,7 +14,8 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 db.once('open', function () {
     console.log('Connected to database...');
 });
-app.use('/transactions', TransactionRouter); 
+app.use('/transactions', TransactionRouter);
+app.use('/users', UserRouter);
 app.listen(3001, () => {
     console.log('Server is running on port 3001');
 });

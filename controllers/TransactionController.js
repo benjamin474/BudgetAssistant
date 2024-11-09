@@ -2,7 +2,8 @@ const Transaction = require('../models/TransactionModel');
 
 exports.createTransaction = async (req, res) => {
     try {
-        const transaction = new Transaction(req.body);
+        const userId = req.userId;
+        const transaction = new Transaction({ ...req.body, user: userId });
         await transaction.save();
         res.status(201).send(transaction); // 201 Created
     } catch (error) {

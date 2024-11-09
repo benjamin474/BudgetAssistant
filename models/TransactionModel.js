@@ -5,6 +5,7 @@ const transactionSchema = new mongoose.Schema({
     amount: Number,
     description: String,
     type: String,
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 });
 
 const Transaction = mongoose.model('Transaction', transactionSchema);
