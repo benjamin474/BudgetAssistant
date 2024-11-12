@@ -21,11 +21,34 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Signup data:', formData);
-    const flag = true;
-    if (flag) {
-        navigate('/');
+    
+    if (formData.password !== formData.password2) {
+      alert('Passwords do not match');
+      return;
     }
+
+    fetch('http://localhost:3001/users/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: formData.email,
+        username: formData.username,
+        password: formData.password
+      }),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        alert('Registration successful');
+        navigate('/');
+      } else {
+        alert('Registration failed: ' + data.message);
+      }
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      alert('An error occurred during registration');
+    });
   };
 
   return (
