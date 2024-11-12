@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 
@@ -7,6 +7,7 @@ const Login = () => {
     email: '',
     password: ''
   });
+
 
   const navigate = useNavigate();
 
@@ -17,16 +18,31 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login data:', formData);
-    const flag = true;
-    if (flag) {
-      navigate('/add-transaction');
-    } else {
-      alert('Username or password is incorrect!');
+    try {
+        const response = await fetch('http://localhost:3001/users/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: formData.email, password: formData.password }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Login failed');
+        }
+
+        const data = await response.json();
+        if (data.success) {
+            localStorage.setItem('token', data.token); // Store the token
+            alert('Login successful');
+            navigate('/add-transaction');
+        } else {
+            alert('Login failed');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
     }
-  };
+};
 
   return (
     <div className="login-container">

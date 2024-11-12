@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-
+import { jwtDecode } from 'jwt-decode';
 import { calculateTotalsForRange } from './transactionUtils';
 
 function AddTransactionWithDate() {
@@ -19,13 +19,33 @@ function AddTransactionWithDate() {
     // 從後端獲取交易資料
     useEffect(() => {
         const fetchTransactions = async () => {
-            const response = await fetch('http://localhost:3001/transactions');
-            const data = await response.json();
-            setTransactions(data);
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.error('No token found. Please log in.');
+                return;
+            }
+        
+            try {
+                const response = await fetch('http://localhost:3001/transactions', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+        
+                if (!response.ok) {
+                    throw new Error(`Error fetching transactions: ${response.statusText}`);
+                }
+        
+                const data = await response.json();
+                setTransactions(data);
+            } catch (error) {
+                console.error('Failed to fetch transactions:', error);
+            }
         };
 
         fetchTransactions();
-
     }, []);
 
 
@@ -36,45 +56,67 @@ function AddTransactionWithDate() {
     }
 
     useEffect(() => {
-        const filtered = transactions.filter(
-            (transaction) => {
-                // const transactionDate = new Date(transaction.date).toLocaleDateString();
-                // return transactionDate >= startDate.toLocaleDateString() && transactionDate <= endDate.toLocaleDateString();
-                const transactionDate = resetTime(new Date(transaction.date));
-                return transactionDate >= resetTime(startDate) && transactionDate <= resetTime(endDate);
-            }
-        );
-        setFilteredTransactions(filtered);
+        if (Array.isArray(transactions)) {
+            const filtered = transactions.filter(
+                (transaction) => {
+                    const transactionDate = resetTime(new Date(transaction.date));
+                    return transactionDate >= resetTime(startDate) && transactionDate <= resetTime(endDate);
+                }
+            );
+            setFilteredTransactions(filtered);
+        } else {
+            console.error('Transactions is not an array:', transactions);
+        }
     }, [startDate, endDate, transactions]);
 
     // 新增交易處理
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('No token found. Please log in.');
+            return;
+        }
+
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken.userId; // Adjust this based on your token's structure
 
         const newTransaction = {
-            date: selectedDate.toLocaleDateString(), // 使用選擇的日期
-            amount: parseFloat(amount), // 將金額轉換為數字
+            user: userId, // Set the user ID
+            date: selectedDate.toLocaleDateString(),
+            amount: parseFloat(amount),
             description,
             type,
         };
 
-        // 透過API將交易儲存到後端資料庫
-        const response = await fetch('http://localhost:3001/transactions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newTransaction),
-        });
 
-        const savedTransaction = await response.json();
-
-        // 更新狀態
-        setTransactions([...transactions, savedTransaction]);
-
-        // 清空表單
-        setAmount('');
-        setDescription('');
+        try {
+            const token = localStorage.getItem('token');
+            console.log('Token:', token);
+            // 透過API將交易儲存到後端資料庫
+            const response = await fetch('http://localhost:3001/transactions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}` // 添加 Authorization header
+                },
+                body: JSON.stringify(newTransaction),
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+    
+            const savedTransaction = await response.json();
+    
+            // 更新狀態
+            setTransactions([...transactions, savedTransaction]);
+    
+            // 清空表單
+            setAmount('');
+            setDescription('');
+        } catch (error) {
+            console.error(`Failed to save transaction: ${error.message}`);
+        }
     };
 
     const handleEditTransaction = (transaction) =>{
@@ -89,6 +131,10 @@ function AddTransactionWithDate() {
         try {
             const response = await fetch(`http://localhost:3001/transactions/${id}`, {
                 method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}` // 添加 Authorization header
+                },
             });
 
             if (response.ok) {
