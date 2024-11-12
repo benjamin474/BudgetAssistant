@@ -5,7 +5,7 @@ const authMiddleware = require('../middleware/authMiddleware'); // Assume this m
 const router = express.Router();
 
 router.route('/')
-    .get(authMiddleware, transactionController.getAllTransaction)
+    .get(authMiddleware, transactionController.getUserTransaction)
     .post(authMiddleware, transactionController.createTransaction);
 
 router.route('/:id')
