@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const transactionSchema = new mongoose.Schema({
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
     date: String,
     amount: Number,
     description: String,
     type: String,
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 });
 
 const Transaction = mongoose.model('Transaction', transactionSchema);
