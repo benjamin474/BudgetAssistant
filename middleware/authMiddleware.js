@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
-    jwt.verify(token, 'your_jwt_secret', (err, decodedToken) => {
+    jwt.verify(token, process.env.JWT_TOKEN, (err, decodedToken) => {
         if (err) {
             return res.status(403).json({ message: 'Invalid token' });
         }

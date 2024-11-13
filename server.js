@@ -5,10 +5,11 @@ const cors = require('cors');
 const TransactionRouter = require('./routes/TransactionRoute');
 const UserRouter = require('./routes/UserRoute');
 const app = express();
+require('dotenv').config();
 app.use(cors());
 app.use(bodyParser.json());
 
-mongoose.connect('mongodb+srv://k0920687524:CbRBAOKhAkGeHwEa@cluster0.xzprk.mongodb.net/budget');
+mongoose.connect(process.env.DATABASE_URL);
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 db.once('open', function () {
