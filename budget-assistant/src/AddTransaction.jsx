@@ -19,8 +19,6 @@ function AddTransactionWithDate() {
     // 從後端獲取交易資料
     useEffect(() => {
         const fetchTransactions = async () => {
-            
-        
             try {
                 const response = await fetch('http://localhost:3001/transactions', {
                     method: 'GET',
@@ -51,6 +49,7 @@ function AddTransactionWithDate() {
         return newDate;
     }
 
+    //特定日期抓資料
     useEffect(() => {
         if (Array.isArray(transactions)) {
             const filtered = transactions.filter(
