@@ -1,0 +1,32 @@
+.button-container button {
+    padding: 10px 20px;
+    margin: 10px 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button-container .add {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.button-container .add:hover {
+    background-color: #218838;
+}
+
+.button-container .logout {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.button-container .logout:hover {
+    background-color: #c82333;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
