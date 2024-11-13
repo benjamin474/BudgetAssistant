@@ -41,7 +41,9 @@ const Signup = () => {
       if (data.success) {
         alert('Registration successful');
         navigate('/');
-      } else {
+      }else if (data.message === 'User already exists') {
+        alert('This email is already registered.');
+      }else {
         alert('Registration failed: ' + data.message);
       }
     })

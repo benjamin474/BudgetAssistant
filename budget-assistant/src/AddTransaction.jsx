@@ -15,15 +15,11 @@ function AddTransactionWithDate() {
     const [filteredTransactions, setFilteredTransactions] = useState([]); // 選擇日期的交易紀錄
     const [queryRange, setQueryRange] = useState('day');
     const [editingTransactions, setEditingTransactions] = useState([]);
-
+    const token = localStorage.getItem('token');
     // 從後端獲取交易資料
     useEffect(() => {
         const fetchTransactions = async () => {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                console.error('No token found. Please log in.');
-                return;
-            }
+            
         
             try {
                 const response = await fetch('http://localhost:3001/transactions', {
@@ -71,12 +67,6 @@ function AddTransactionWithDate() {
 
     // 新增交易處理
     const handleSubmit = async (e) => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            console.error('No token found. Please log in.');
-            return;
-        }
-
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.userId; // Adjust this based on your token's structure
 
@@ -90,7 +80,6 @@ function AddTransactionWithDate() {
 
 
         try {
-            const token = localStorage.getItem('token');
             console.log('Token:', token);
             // 透過API將交易儲存到後端資料庫
             const response = await fetch('http://localhost:3001/transactions', {
