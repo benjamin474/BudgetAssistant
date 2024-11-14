@@ -96,33 +96,35 @@ app.post('/api/verify-otp', async (req, res) => {
 
 app.post('/users/login', async (req, res) => {
     const { email, password } = req.body;
-
     try {
-        // Attempt to find the user by email
         const user = await User.findOne({ email });
         if (!user) {
-            console.log("User not found for email:", email);  // Debugging line
-            return res.status(404).json({ success: false, message: "User not found" });
+            return res.status(404).json({ success: false, message: 'User not found' });
         }
-        console.log("Entered password:", password);
-        console.log("Stored hashed password:", user.password);
-        // Compare provided password with stored hashed password
-        const isMatch = await bcrypt.compare(password, user.password);
-        console.log("Password match:", isMatch);  // Debugging line
 
-        if (isMatch) {
-            // Password is correct; login successful
-            return res.status(200).json({ success: true, message: "Login successful", token: "your_jwt_token" });
+        if (user.password === password) { // Compare plain text password
+            return res.status(200).json({ success: true, message: 'Login successful' });
         } else {
-            // Password mismatch
-            console.log("Password does not match for user:", email);  // Debugging line
-            return res.status(401).json({ success: false, message: "Invalid password" });
+            return res.status(401).json({ success: false, message: 'Invalid password' });
         }
     } catch (error) {
-        console.error("Login error:", error);
-        return res.status(500).json({ success: false, message: "Server error" });
+        res.status(500).json({ success: false, message: 'Error during login' });
     }
 });
+
+
+app.post('/users/register', async (req, res) => {
+    const { email, username, password } = req.body;
+    try {
+        const user = new User({ email, username, password }); // Save password in plain text
+        await user.save();
+        res.status(200).json({ success: true, message: 'Registration successful' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error registering user' });
+    }
+});
+
+
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
