@@ -20,6 +20,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Attempting login with password:", formData.password);  // Debugging line
     try {
         const response = await fetch('http://localhost:3001/users/login', {
             method: 'POST',
@@ -28,21 +29,24 @@ const Login = () => {
         });
 
         if (!response.ok) {
-            throw new Error('Login failed');
+            const errorMessage = await response.text();
+            throw new Error(errorMessage || 'Login failed');
         }
 
         const data = await response.json();
         if (data.success) {
-            localStorage.setItem('token', data.token); // Store the token
+            localStorage.setItem('token', data.token);
             alert('Login successful');
-            navigate('/add-transaction');
+            navigate('/Add-transaction');
         } else {
-            alert('Login failed');
+            alert('Login failed: Invalid credentials');
         }
     } catch (error) {
         console.error('Login error:', error);
+        alert(error.message.includes('NetworkError') ? 'Network error. Please try again later.' : error.message);
     }
 };
+
 
   return (
     <div className="login-container">
