@@ -1,10 +1,16 @@
 import { useState } from 'react';
 import './ForgotPassword.css';
+import { useNavigate } from 'react-router-dom';
 function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [newPassword, setNewPassword] = useState('');
+  const navigate = useNavigate();
+
+  const handleBack = async () => {
+    navigate('../login');
+  }
 
   const sendOtp = async () => {
     try {
@@ -72,6 +78,7 @@ return (
             className="styled-input"
           />
           <button onClick={sendOtp} className="styled-button">Send OTP</button>
+          <button onClick={handleBack} className="styled-button">Back</button>
         </div>
       ) : (
         <div className="input-group">

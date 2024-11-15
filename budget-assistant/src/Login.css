@@ -64,8 +64,13 @@ body {
     transition: background-color 0.3s;
 }
 
+.icon-set{
+    width: 10px;
+    height: 10px;
+}
+
 .social-button.facebook {
-    background-color: #3b5998;
+    background-image: 'https://i.ibb.co/JQb3D78/facebook-number.png';
 }
 
 .social-button.twitter {

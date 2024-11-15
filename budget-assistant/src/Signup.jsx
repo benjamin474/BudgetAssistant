@@ -19,6 +19,10 @@ const Signup = () => {
     });
   };
 
+  const handleBack = () => {
+    navigate('../login');
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
     
@@ -110,6 +114,7 @@ const Signup = () => {
         <button type="submit" className="login-button">
           Sign Up
         </button>
+        <button onClick={handleBack} className='login-button'>Back</button>
       </form>
     </div>
   );

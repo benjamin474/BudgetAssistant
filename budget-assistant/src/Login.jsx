@@ -60,7 +60,7 @@ const Login = () => {
         <div className="social-login">
           <p>Sign in with</p>
           <div className="social-buttons">
-            <button className="social-button facebook">F</button>
+            <button className="social-button facebook"><img class='icon-set'></img></button>
             <button className="social-button twitter">T</button>
             <button className="social-button linkedin">L</button>
           </div>
