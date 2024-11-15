@@ -2,14 +2,18 @@ import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
 import { calculateTotalsForRange } from './transactionUtils';
 import './Add.css';
 
 function Add() {
-    const [selectedDate, setSelectedDate] = useState(new Date()); // 預設為今天的日期
-    const [amount, setAmount] = useState(''); // 金額
-    const [description, setDescription] = useState(''); // 描述
-    const [type, setType] = useState('expense'); // 交易類型，預設為支出
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [amount, setAmount] = useState('');
+    const [description, setDescription] = useState('');
+    const [type, setType] = useState('expense');
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState('Others');
+    const navigate = useNavigate();
     // 新增交易處理
     const handleSubmit = async (e) => {
         const decodedToken = jwtDecode(token);
@@ -49,9 +53,101 @@ function Add() {
             console.error(`Failed to save transaction: ${error.message}`);
         }
     };
+/*
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
+    const fetchCategories = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error("Token not found. Please log in again.");
+            }
+            const response = await fetch('http://localhost:3001/category', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Error fetching categories: ${response.status} ${response.statusText}`);
+            }
+    
+            let data = await response.json();
+    
+            // if (!data.some(category => category.name === 'Others')) {
+            //     data = [...data, { name: 'Others', _id: 'others' }];
+            // }
+    
+            setCategories(data);
+        } catch (error) {
+            console.error(`Failed to fetch categories: ${error.message}`);
+        }
+    };
+
+    const handleAddCategory = async () => {
+        const newCategory = window.prompt("Please enter the new category name:");
+        if (!newCategory) return;
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:3001/category', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ name: newCategory })
+            });
+    
+            alert("New category added successfully.");
+            fetchCategories();
+        } catch (error) {
+            console.error(`Failed to add category: ${error.message}`);
+        }
+    };
+    
+
+    const handleDeleteCategory = async () => {
+        if (selectedCategory === 'Others') {
+            alert("The 'Others' category is default and cannot be deleted.");
+            return;
+        }
+        const confirmDelete = window.confirm(
+            "Are you sure to delete this selected category? This action cannot be undone."
+        );
+        if (confirmDelete) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`http://localhost:3001/category/${selectedCategory._id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+                if (!response.ok) throw new Error(`Error deleting category: ${response.statusText}`);
+
+                alert("Category deleted successfully.");
+                fetchCategories();
+                setSelectedCategory('Others');
+            } catch (error) {
+                console.error(`Failed to delete category: ${error.message}`);
+            }
+        }
+    };
+*/
+    const handleBack = () => {
+        navigate('/home');
+    };
+
 
     return (
         <div>
+            <button type="button" className="btn-back" onClick={handleBack}>Back</button>
+            
             <h2>請選擇日期，紀錄您的帳務~</h2>
 
             {/* 日期選擇器，讓使用者選擇日期 */}
@@ -79,17 +175,20 @@ function Add() {
                         required
                     />
                 </label>
-                <label>
+                {/* <label>
                     分類(Category):
-                    <select value={type} onChange={(e) => setType(e.target.value)}>
-                        <option value="expense">支出(Expense)</option>
-                        <option value="income">收入(Income)</option>
+                    <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+                        {categories.map((category, index) => (
+                            <option key={index} value={category._id}>
+                                {category.name}
+                            </option>
+                        ))}
                     </select>
-                </label>
-                <div className="category-buttons">
-                    <button type="button" className="btn-add">Add Category</button>
-                    <button type="button" className="btn-delete">Delete Category</button>
-                </div>
+                </label> */}
+                {/* <div className="category-buttons">
+                    <button type="button" className="btn-add" onClick={handleAddCategory}>Add Category</button>
+                    <button type="button" className="btn-delete" onClick={handleDeleteCategory}>Delete Category</button>
+                </div> */}
                 <label>
                     描述(Description):
                     <input

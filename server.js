@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const TransactionRouter = require('./routes/TransactionRoute');
 const UserRouter = require('./routes/UserRoute');
+const CategoryRouter = require('./routes/CategoryRoute');
 const app = express();
 require('dotenv').config();
 app.use(cors());
@@ -17,6 +18,4 @@ db.once('open', function () {
 });
 app.use('/transactions', TransactionRouter);
 app.use('/users', UserRouter);
-app.listen(3001, () => {
-    console.log('Server is running on port 3001');
-});
+app.use('/category', CategoryRouter);
