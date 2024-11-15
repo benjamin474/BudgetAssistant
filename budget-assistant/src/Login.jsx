@@ -51,7 +51,7 @@ const Login = () => {
 
 return (
   <div className="login-container">
-    <h2>Log In to Lucy™</h2>
+    <h2>Log In Budget Assistant™</h2>
     <form onSubmit={handleSubmit}>
       <div className="form-group">
         <label htmlFor="email">Your Email</label>
