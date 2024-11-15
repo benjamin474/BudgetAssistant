@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 
@@ -8,6 +8,7 @@ const Login = () => {
     password: ''
   });
 
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -16,6 +17,7 @@ const Login = () => {
       [e.target.name]: e.target.value
     });
   };
+  //
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,79 +43,46 @@ const Login = () => {
     } catch (error) {
         console.error('Login error:', error);
     }
-  };
+};
 
   return (
-    <div className="login-page">
-      <div className="login-image-container">
-        <img 
-          src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
-          alt="Login illustration"
-          className="login-image"
-        />
-      </div>
-
-      <div className="login-container">
-        <h2 className="login-header">Log In</h2>
-
-        {/* Social media sign-in buttons */}
-        <div className="social-login">
-          <p>Sign in with</p>
-          <div className="social-buttons">
-            <button className="social-button facebook">F</button>
-            <button className="social-button twitter">T</button>
-            <button className="social-button linkedin">L</button>
-          </div>
+    <div className="login-container">
+      <h2>Log In</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="email">Email/Username:</label>
+          <input
+            type="text"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Enter your email or username"
+            required
+          />
         </div>
 
-        <div className="divider">
-          <span>Or</span>
+        <div className="form-group">
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Enter your password"
+            required
+          />
         </div>
+        
+        <button type="submit" className="login-button">
+          Log In
+        </button>
+      </form>
 
-        <form onSubmit={handleSubmit} className="login-form">
-          <div className="form-group">
-            <label htmlFor="email" className="form-label">Email/Username:</label>
-            <input
-              type="text"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter your email or username"
-              required
-              className="form-input"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password" className="form-label">Password:</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Enter your password"
-              required
-              className="form-input"
-            />
-          </div>
-
-          <button type="submit" className="login-button">
-            Log In
-          </button>
-        </form>
-
-        <div className="additional-links">
-          <label>
-            <input type="checkbox" /> Remember me
-          </label>
-          <Link to="/forgot-password" className="forgot-password">Forgot password?</Link>
-        </div>
-
-        <div className="link">
-          Don't have an account? <Link to="/sign-up" className="register-link">Register</Link>
-        </div>
+      <div className="link">
+        <Link to="/sign-up"> Sign Up</Link> | 
+        <Link to="/forgot-password"> Forgot Password?</Link>
       </div>
     </div>
   );
