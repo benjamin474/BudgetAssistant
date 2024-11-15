@@ -1,32 +1,80 @@
 import { useState } from 'react';
 
-const ResetPassword = () => {
-  const [email, setEmail] = useState(''); // 用戶輸入的電子郵件
-  const [message, setMessage] = useState(''); // 顯示提示訊息
+function ForgotPassword() {
+  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // 模擬發送重設密碼的郵件
-    setMessage(`A password reset link has been sent to ${email}`);
+  const sendOtp = async () => {
+    try {
+      // API call to send OTP
+      const response = await fetch('http://localhost:3001/api/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to send OTP');
+      }
+  
+      setOtpSent(true); // Update state if OTP is sent successfully
+      alert('OTP has been sent to your email.');
+    } catch (error) {
+      console.error('Error sending OTP:', error);
+      alert('There was a problem sending the OTP. Please try again.');
+    }
   };
+  
+  
+
+  const verifyOtpAndResetPassword = async () => {
+  try {
+    // API call to verify OTP and reset password
+    const response = await fetch('http://localhost:3001/api/verify-otp', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        otp,
+        newPassword,
+      }),
+    });
+
+    // Check if the request was successful
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      alert(`Error: ${errorMessage}`);
+    } else {
+      alert('Password reset successful');
+    }
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    alert('There was an error resetting your password. Please try again.');
+  }
+};
+
 
   return (
     <div>
-      <h2>Reset Password</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)} // 更新電子郵件狀態
-          required
-        />
-        <button type="submit">Submit</button>
-      </form>
-      {message && <p>{message}</p>} {/* 顯示提示訊息 */}
+      <h2>Forgot Password</h2>
+      {!otpSent ? (
+        <div>
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your email" />
+          <button onClick={sendOtp}>Send OTP</button>
+        </div>
+      ) : (
+        <div>
+          <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="Enter OTP" />
+          <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="New Password" />
+          <button onClick={verifyOtpAndResetPassword}>Reset Password</button>
+        </div>
+      )}
     </div>
   );
-};
+}
 
-export default ResetPassword;
+export default ForgotPassword;
