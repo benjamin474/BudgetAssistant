@@ -1,12 +1,12 @@
 /* 統一設置深灰色的頁面背景 */
 body {
-    background-color: purple;
+    background-color: rgb(182, 207, 223);
     font-family: Arial, sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100vh;
-    margin: 0;
+    margin : 0;
 }
 
 .login-page{
