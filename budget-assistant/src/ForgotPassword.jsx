@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import './ForgotPassword.css';
 function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
@@ -58,23 +58,43 @@ function ForgotPassword() {
 };
 
 
-  return (
-    <div>
+return (
+  <div className="forgot-password-container">
+    <div className="forgot-password-card">
       <h2>Forgot Password</h2>
       {!otpSent ? (
-        <div>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your email" />
-          <button onClick={sendOtp}>Send OTP</button>
+        <div className="input-group">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
+            className="styled-input"
+          />
+          <button onClick={sendOtp} className="styled-button">Send OTP</button>
         </div>
       ) : (
-        <div>
-          <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="Enter OTP" />
-          <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="New Password" />
-          <button onClick={verifyOtpAndResetPassword}>Reset Password</button>
+        <div className="input-group">
+          <input
+            type="text"
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+            placeholder="Enter OTP"
+            className="styled-input"
+          />
+          <input
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            placeholder="New Password"
+            className="styled-input"
+          />
+          <button onClick={verifyOtpAndResetPassword} className="styled-button">Reset Password</button>
         </div>
       )}
     </div>
-  );
+  </div>
+);
 }
 
 export default ForgotPassword;
