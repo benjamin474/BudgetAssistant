@@ -3,6 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { jwtDecode } from 'jwt-decode';
 import { calculateTotalsForRange } from './transactionUtils';
+import { useNavigate } from 'react-router-dom';
 
 function AddTransactionWithDate() {
     const [selectedDate, setSelectedDate] = useState(new Date()); // 預設為今天的日期
@@ -15,7 +16,8 @@ function AddTransactionWithDate() {
     const [filteredTransactions, setFilteredTransactions] = useState([]); // 選擇日期的交易紀錄
     const [queryRange, setQueryRange] = useState('day');
     const [editingTransactions, setEditingTransactions] = useState([]);
-
+    const navigate = useNavigate();
+    
     // 從後端獲取交易資料
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -148,6 +150,10 @@ function AddTransactionWithDate() {
         }
     };
 
+    const handleLogout = () => {
+        navigate('../login');
+    }
+
     // 計算該天的總金額
     const { incomeTotal, expenseTotal, netTotal } = filteredTransactions.reduce((totals, transaction) => {
         if (transaction.type == 'income') {
@@ -247,6 +253,8 @@ function AddTransactionWithDate() {
             }}>
                 Query Transactions
             </button> */}
+        <button onClick={handleLogout}>Log out</button>
+
         </div>
     );
 }

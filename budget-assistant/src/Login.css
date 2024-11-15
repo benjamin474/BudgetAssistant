@@ -1,8 +1,6 @@
 /* 統一設置深灰色的頁面背景 */
 body {
-    background-color: white;
-    /* 深灰色背景 */
-    /* 調整文字顏色 */
+    background-color: purple;
     font-family: Arial, sans-serif;
     display: flex;
     align-items: center;
