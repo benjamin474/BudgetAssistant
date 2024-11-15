@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
+import axios from 'axios';
 import 'react-datepicker/dist/react-datepicker.css';
 import { jwtDecode } from 'jwt-decode';
 import { calculateTotalsForRange } from './transactionUtils';
@@ -148,6 +149,30 @@ function AddTransactionWithDate() {
         return totals;
     }, { incomeTotal: 0, expenseTotal: 0, netTotal: 0 });
 
+    // 下載成excel
+    const handleDownload = async () => {
+
+        const userId = jwtDecode(token).userId;
+        try {
+            // 發送 GET 請求下載 Excel
+            const response = await axios.get(`http://localhost:3001/export-excel/${userId}`, {
+                responseType: 'blob', // 指定返回為二進制文件
+            });
+
+            // 創建下載連結
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `transaction_Frontend.xlsx`); // 設定下載的檔案名
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            console.error('Error downloading Excel:', error);
+            alert('Failed to download the file. Please try again.');
+        }
+    };
+
     return (
         <div>
             <h2>請選擇日期，紀錄您的帳務~</h2>
@@ -219,6 +244,8 @@ function AddTransactionWithDate() {
             <h3>您總共賺到：{incomeTotal}元</h3>
             <h3>您總共花費：{expenseTotal}元</h3>
             <h1>淨值   ：{netTotal}</h1>
+
+            <button onClick={handleDownload}>Download Excel</button>
 
             {/* 範圍查詢 */}
             {/* <label htmlFor="queryRange">Select Range:</label>
