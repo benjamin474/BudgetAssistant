@@ -49,47 +49,52 @@ const Login = () => {
 };
 
 
-  return (
-    <div className="login-container">
-      <h2>Log In</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="email">Email/Username:</label>
-          <input
-            type="text"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Enter your email or username"
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Enter your password"
-            required
-          />
-        </div>
-        
-        <button type="submit" className="login-button">
-          Log In
-        </button>
-      </form>
-
-      <div className="link">
-        <Link to="/sign-up"> Sign Up</Link> | 
-        <Link to="/forgot-password"> Forgot Password?</Link>
+return (
+  <div className="login-container">
+    <h2>Log In to Lucy™</h2>
+    <form onSubmit={handleSubmit}>
+      <div className="form-group">
+        <label htmlFor="email">Your Email</label>
+        <input
+          type="text"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder="Enter your email"
+          required
+        />
       </div>
+
+      <div className="form-group">
+        <label htmlFor="password">Your Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          placeholder="Enter your password"
+          required
+        />
+      </div>
+      
+      <div className="remember-forgot">
+        <div>
+          <input type="checkbox" id="remember" name="remember" /> Remember
+          
+        </div>
+        <Link to="/forgot-password">Forgotten?</Link>
+      </div>
+
+      <button type="submit" className="login-button">Log In</button>
+    </form>
+
+    <div className="link">
+      Don't have an account? <Link to="/sign-up">Sign Up</Link>
     </div>
-  );
+  </div>
+);
 };
 
 export default Login;
