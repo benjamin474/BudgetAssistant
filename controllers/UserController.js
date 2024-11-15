@@ -29,7 +29,11 @@ exports.loginUser = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).json({ success: false, message: 'Invalid password' }); // Return JSON response
         }
+<<<<<<< HEAD
         const token = jwt.sign({ userId: user._id }, 'your_jwt_secret');
+=======
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_TOKEN);
+>>>>>>> dad6065b6ca4b5418422d4f67c282033dcb9af76
         res.status(200).json({ success: true, token }); // Return JSON response
     } catch (error) {
         res.status(500).json({ success: false, message: `Error logging in: ${error.message}` }); // Return JSON response

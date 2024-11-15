@@ -19,3 +19,6 @@ db.once('open', function () {
 app.use('/transactions', TransactionRouter);
 app.use('/users', UserRouter);
 app.use('/category', CategoryRouter);
+app.listen(3001, () => {
+    console.log('Server is running on port 3001');
+});

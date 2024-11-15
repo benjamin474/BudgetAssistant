@@ -51,6 +51,7 @@ function AddTransactionWithDate() {
         return newDate;
     }
 
+    //特定日期抓資料
     useEffect(() => {
         if (Array.isArray(transactions)) {
             const filtered = transactions.filter(
