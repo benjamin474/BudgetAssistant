@@ -1,6 +1,5 @@
 const ExcelJS = require('exceljs');
 const path = require('path');
-const os = require('os');
 const transaction = require('./models/TransactionModel');
 const mongoose = require('mongoose');
 
@@ -8,8 +7,8 @@ async function exportMongoToExcel(user) {
     try {
         // 獲取下載資料夾路徑  
         console.log(`user : ${user}`)
-        const downloadsDir = path.join(os.homedir(), 'Downloads');
-        const outputFilePath = path.join(downloadsDir, `transaction_backend.xlsx`);
+        const downloadsDir = path.join(__dirname, 'download');
+        const outputFilePath = path.join(downloadsDir, `transaction.xlsx`);
 
         console.log(`Output file path: ${outputFilePath}`); // 打印路徑
 

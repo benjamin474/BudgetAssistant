@@ -22,15 +22,26 @@ app.listen(3001, () => {
     console.log('Server is running on port 3001');
 });
 
+// 獲得excel
 app.get('/export-excel/:user', async (req, res) => {
     const { user } = req.params;
     console.log(`server : ${user}`);
     
     try {
-        const filePath = await exportMongoToExcel(user);  // 傳遞 ObjectId
-        res.download(filePath);  // 下載檔案
+        const filePath = await exportMongoToExcel(user); // 產生 Excel 檔案的路徑
+
+        // 傳送檔案給前端
+        res.sendFile(filePath, (err) => {
+            if (err) {
+                console.error('Error sending file:', err.message);
+                res.status(500).send('Failed to send the file.');
+            } else {
+                console.log('File sent successfully.');
+            }
+        });
     } catch (error) {
         console.error('Error exporting Excel:', error.message);
         res.status(500).send(error.message);
     }
+
 });
