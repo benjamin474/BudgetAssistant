@@ -14,7 +14,7 @@ function AddTransactionWithDate() {
     const [endDate, setEndDate] = useState(new Date()); // 篩選的結束日期
     const [amount, setAmount] = useState(''); // 金額
     const [description, setDescription] = useState(''); // 描述
-    const [kind, setKind] = useState('其他'); // 預設分類
+    const [kind, setKind] = useState(''); // 預設分類
     const [type, setType] = useState('expense'); // 交易類型，預設為支出
     const [transactions, setTransactions] = useState([]); // 所有交易紀錄
     const [filteredTransactions, setFilteredTransactions] = useState([]); // 選擇日期的交易紀錄
@@ -129,8 +129,14 @@ function AddTransactionWithDate() {
         }
     };
     //編輯交易處理
-    const handleEditTransaction = async (id) => {
+    const handleEditTransaction = (transaction) => {
         console.log("Now we're going to edit your transaction")
+        setAmount(transaction.amount);
+        setDescription(transaction.description);
+        setKind(transaction.kind);
+        setSelectedDate(new Date(transaction.date));
+
+        handleDeleteTransaction(transaction._id);
     }
 
 
@@ -162,17 +168,22 @@ function AddTransactionWithDate() {
     };
 
     // 計算該天的總金額
-    const { incomeTotal, expenseTotal, netTotal } = filteredTransactions.reduce(
+    const { incomeTotal, expenseTotal, netTotal, budgetTotal, remainingBudget } = filteredTransactions.reduce(
         (totals, transaction) => {
-            if (transaction.type === 'income') {
+            if (transaction.type === 'budget') {
+                totals.budgetTotal += transaction.amount;
+            }
+            else if (transaction.type === 'income') {
                 totals.incomeTotal += transaction.amount;
             } else if (transaction.type === 'expense') {
                 totals.expenseTotal += transaction.amount;
             }
             totals.netTotal = totals.incomeTotal - totals.expenseTotal;
+            totals.remainingBudget = totals.budgetTotal - totals.expenseTotal;
             return totals;
         },
-        { incomeTotal: 0, expenseTotal: 0, netTotal: 0 }
+        { incomeTotal: 0, expenseTotal: 0, netTotal: 0, budgetTotal: 0, remainingBudget: 0 }
+
     );
 
     // 下載成excel
@@ -215,7 +226,7 @@ function AddTransactionWithDate() {
             <div className='date-picker-container'>
                 <DatePicker
                     selected={selectedDate}
-                    onChange={(date) => setSelectedDate(date)} 
+                    onChange={(date) => setSelectedDate(date)}
                     // 暫時+1
                     dateFormat="yyyy/MM/dd"
                     inline
@@ -244,6 +255,7 @@ function AddTransactionWithDate() {
                     <select value={type} onChange={(e) => setType(e.target.value)}>
                         <option value="expense">支出(Expense)</option>
                         <option value="income">收入(Income)</option>
+                        <option value="budget">預算(Budget)</option>
                     </select>
                 </label>
                 <label>
@@ -257,14 +269,16 @@ function AddTransactionWithDate() {
                                 <option value="娛樂">娛樂</option>
                                 <option value="其他">其他</option>
                             </>
-                        ) : (
+                        ) : type==='income' ? (
                             <>
-                                <option value="預算">預算</option>
                                 <option value="薪資">薪資</option>
                                 <option value="投資">投資</option>
                                 <option value="副業">副業</option>
                                 <option value="其他">其他</option>
                             </>
+                            
+                        ) : (
+                            <option value="預算">預算</option>
                         )}
                     </select>
                 </label>
@@ -291,18 +305,22 @@ function AddTransactionWithDate() {
                         <div className="transaction-kind">{transaction.kind}</div>
                         <div className="transaction-details">
                             <div>{transaction.date}</div>
-                            <div>{transaction.type === 'income' ? '+' : '-'}{transaction.amount} 元</div>
+                            <div><h1>{transaction.amount} 元</h1> </div>
                             <div>{transaction.description || '無描述'}</div>
                         </div>
-                        <button>編輯</button>
+                        <button onClick={() => handleEditTransaction(transaction)}>編輯</button>
                         <button onClick={() => handleDeleteTransaction(transaction._id)}>刪除</button>
                     </div>
                 ))}
             </div>
+            
+                <h3>您總共賺到：{incomeTotal}元</h3>
+                <h3>您總共花費：{expenseTotal}元</h3>
+                <h2>總預算：{budgetTotal}元</h2>
+                <h2>淨值：{netTotal}</h2>                
+                <h1>剩餘可用金額：{remainingBudget}元</h1>
 
-            <h3>您總共賺到：{incomeTotal}元</h3>
-            <h3>您總共花費：{expenseTotal}元</h3>
-            <h1>淨值：{netTotal}</h1>
+
 
             {/* 圖表部分 */}
             <div className='chart-container'>
