@@ -2,7 +2,7 @@ html,body{
     margin: 0;
     padding: 0;
     overflow: auto;
-    height: 100%;
+    height: 150vh;
 }
 
 .date-picker-container{
@@ -18,10 +18,22 @@ html,body{
 
 .transaction-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 10px;
     margin-top: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
 }
+.chart-container{
+    max-height: 600px;
+    overflow-y: auto;
+}
+
 
 .transaction-item {
     display: flex;
@@ -31,6 +43,7 @@ html,body{
     padding: 10px;
     background-color: #f9f9f9;
 }
+
 
 .transaction-kind {
     font-size: 18px;

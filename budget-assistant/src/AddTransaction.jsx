@@ -264,7 +264,9 @@ function AddTransactionWithDate() {
             <h1>淨值：{netTotal}</h1>
 
             {/* 圖表部分 */}
-            <TransactionCharts transactions={filteredTransactions} />
+            <div className='chart-container'>
+                <TransactionCharts transactions={filteredTransactions} />
+            </div>
         </div>
     );
 }
