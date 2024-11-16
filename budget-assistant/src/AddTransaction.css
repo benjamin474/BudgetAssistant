@@ -5,7 +5,16 @@ html,body{
     height: 100%;
 }
 
-
+.date-picker-container{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+}
 
 .transaction-grid {
     display: grid;
