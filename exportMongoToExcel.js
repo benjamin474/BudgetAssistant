@@ -1,7 +1,6 @@
 const ExcelJS = require('exceljs');
 const path = require('path');
 const transaction = require('./models/TransactionModel');
-const mongoose = require('mongoose');
 
 async function exportMongoToExcel(user) {
     try {
@@ -13,7 +12,9 @@ async function exportMongoToExcel(user) {
         console.log(`Output file path: ${outputFilePath}`); // 打印路徑
 
         // 從資料庫查詢指定 user 的交易紀錄
-        const transactions = await transaction.find({ user: user }).lean();
+        const transactions = await transaction.find({ user: user })
+            .sort({ date: 1 }) // 1表示升序，-1表示降序
+            .lean();
 
         if (transactions.length === 0) {
             throw new Error(`No records found for user: ${user}`);
@@ -33,8 +34,11 @@ async function exportMongoToExcel(user) {
 
         // 添加資料
         transactions.forEach(item => {
+            const date = new Date(item.date);
+            const localDate = date.toLocaleDateString('en-US'); // 設定當地時間格式，根據需要調整 'en-US'
+        
             worksheet.addRow({
-                date: new Date(item.date).toISOString().split('T')[0], // 格式化日期
+                date: localDate, // 當地時間格式的日期
                 amount: item.amount,
                 description: item.description,
                 type: item.type,
