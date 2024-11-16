@@ -1,5 +1,5 @@
 /* 統一設置深灰色的頁面背景 */
-body {
+html, body {
     background-color: rgb(143, 203, 214);
     /* 深灰色背景 */
     /* 調整文字顏色 */
@@ -12,6 +12,7 @@ body {
 }
 
 .login-page{
+    background-color: lightgray;
     display: flex;
 }
 
