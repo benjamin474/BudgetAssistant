@@ -6,6 +6,10 @@ exports.registerUser = async (req, res) => {
     try {
         const { username, email, password } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ success: false, message: 'User already exists' });
+        }
         const user = new User({ username, email, password: hashedPassword });
         await user.save();
         res.status(201).json({ success: true, message: 'User registered successfully' }); // Send JSON response
@@ -25,7 +29,7 @@ exports.loginUser = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).json({ success: false, message: 'Invalid password' }); // Return JSON response
         }
-        const token = jwt.sign({ userId: user._id }, 'your_jwt_secret');
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_TOKEN);
         res.status(200).json({ success: true, token }); // Return JSON response
     } catch (error) {
         res.status(500).json({ success: false, message: `Error logging in: ${error.message}` }); // Return JSON response

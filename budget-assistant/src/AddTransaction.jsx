@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
+import axios from 'axios';
 import 'react-datepicker/dist/react-datepicker.css';
 import { jwtDecode } from 'jwt-decode';
 import { calculateTotalsForRange } from './transactionUtils';
@@ -17,6 +18,9 @@ function AddTransactionWithDate() {
     const [type, setType] = useState('expense'); // 交易類型，預設為支出
     const [transactions, setTransactions] = useState([]); // 所有交易紀錄
     const [filteredTransactions, setFilteredTransactions] = useState([]); // 選擇日期的交易紀錄
+    const [queryRange, setQueryRange] = useState('day');
+    const [editingTransactions, setEditingTransactions] = useState([]);
+    const token = localStorage.getItem('token');
     const navigate = useNavigate();
 
     // 從後端獲取交易資料
@@ -28,7 +32,6 @@ function AddTransactionWithDate() {
                 navigate('../login');
                 return;
             }
-
             try {
                 const response = await fetch('http://localhost:3001/transactions', {
                     method: 'GET',
@@ -58,6 +61,7 @@ function AddTransactionWithDate() {
         return newDate;
     };
 
+    //特定日期抓資料
     useEffect(() => {
         if (Array.isArray(transactions)) {
             const filtered = transactions.filter((transaction) => {
@@ -93,6 +97,8 @@ function AddTransactionWithDate() {
         };
 
         try {
+            console.log('Token:', token);
+            // 透過API將交易儲存到後端資料庫
             const response = await fetch('http://localhost:3001/transactions', {
                 method: 'POST',
                 headers: {
@@ -119,6 +125,11 @@ function AddTransactionWithDate() {
             console.error(`Failed to save transaction: ${error.message}`);
         }
     };
+    //編輯交易處理
+    const handleEditTransaction = async (id) => {
+        console.log("Now we're going to edit your transaction")
+    }
+
 
     // 刪除交易處理
     const handleDeleteTransaction = async (id) => {
@@ -161,6 +172,30 @@ function AddTransactionWithDate() {
         { incomeTotal: 0, expenseTotal: 0, netTotal: 0 }
     );
 
+    // 下載成excel
+    const handleDownload = async () => {
+
+        const userId = jwtDecode(token).userId;
+        try {
+            // 發送 GET 請求下載 Excel
+            const response = await axios.get(`http://localhost:3001/export-excel/${userId}`, {
+                responseType: 'blob', // 指定返回為二進制文件
+            });
+
+            // 創建下載連結
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `transaction.xlsx`); // 設定下載的檔案名
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            console.error('Error downloading Excel:', error);
+            alert('Failed to download the file. Please try again.');
+        }
+    };
+
     return (
         <div style={{
             height: 'auto',
@@ -177,7 +212,8 @@ function AddTransactionWithDate() {
             <div className='date-picker-container'>
                 <DatePicker
                     selected={selectedDate}
-                    onChange={(date) => setSelectedDate(date)}
+                    onChange={(date) => setSelectedDate(date)} 
+                    // 暫時+1
                     dateFormat="yyyy/MM/dd"
                     inline
                 />
@@ -220,6 +256,7 @@ function AddTransactionWithDate() {
                             </>
                         ) : (
                             <>
+                                <option value="預算">預算</option>
                                 <option value="薪資">薪資</option>
                                 <option value="投資">投資</option>
                                 <option value="副業">副業</option>
@@ -254,6 +291,7 @@ function AddTransactionWithDate() {
                             <div>{transaction.type === 'income' ? '+' : '-'}{transaction.amount} 元</div>
                             <div>{transaction.description || '無描述'}</div>
                         </div>
+                        <button>編輯</button>
                         <button onClick={() => handleDeleteTransaction(transaction._id)}>刪除</button>
                     </div>
                 ))}
@@ -267,7 +305,9 @@ function AddTransactionWithDate() {
             <div className='chart-container'>
                 <TransactionCharts transactions={filteredTransactions} />
             </div>
-        </div>
+            <button onClick={handleDownload}>Download Excel</button>
+
+        </div >
     );
 }
 

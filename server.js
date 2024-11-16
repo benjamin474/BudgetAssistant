@@ -12,14 +12,19 @@ const User = require('./models/UserModel');
 const TransactionRouter = require('./routes/TransactionRoute');
 const UserRouter = require('./routes/UserRoute');
 
+const exportMongoToExcel = require('./exportMongoToExcel');
 const app = express();
+require('dotenv').config();
 app.use(cors());
 app.use(bodyParser.json());
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+// MongoDB Connection
+mongoose.connect(process.env.MONGODB_URI || process.env.DATABASE_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
   .then(() => console.log("Connected to database..."))
   .catch(error => console.error("MongoDB connection error:", error));
-
 
 app.use('/transactions', TransactionRouter);
 app.use('/users', UserRouter);
@@ -94,6 +99,30 @@ app.post('/api/verify-otp', async (req, res) => {
     }
 });
 
+// Export MongoDB data to Excel
+app.get('/export-excel/:user', async (req, res) => {
+    const { user } = req.params;
+    console.log(`server : ${user}`);
+    
+    try {
+        const filePath = await exportMongoToExcel(user); // 產生 Excel 檔案的路徑
+
+        // 傳送檔案給前端
+        res.sendFile(filePath, (err) => {
+            if (err) {
+                console.error('Error sending file:', err.message);
+                res.status(500).send('Failed to send the file.');
+            } else {
+                console.log('File sent successfully.');
+            }
+        });
+    } catch (error) {
+        console.error('Error exporting Excel:', error.message);
+        res.status(500).send(error.message);
+    }
+});
+
+// User Login
 app.post('/users/login', async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -112,7 +141,7 @@ app.post('/users/login', async (req, res) => {
     }
 });
 
-
+// User Registration
 app.post('/users/register', async (req, res) => {
     const { email, username, password } = req.body;
     try {
@@ -123,8 +152,6 @@ app.post('/users/register', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error registering user' });
     }
 });
-
-
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

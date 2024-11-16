@@ -27,18 +27,21 @@ const Login = () => {
         });
 
         if (!response.ok) {
-            throw new Error('Login failed');
-        }
-
-        const data = await response.json();
-        if (data.success) {
-            localStorage.setItem('token', data.token); // Store the token
-            alert('Login successful');
-            navigate('/add-transaction');
+            if (response.status === 401) {
+                alert('密碼錯誤'); // Password incorrect
+            } else {
+                throw new Error('Login failed');
+            }
         } else {
-            alert('Login failed');
+            const data = await response.json();
+            if (data.success) {
+                localStorage.setItem('token', data.token); // Store the token
+                alert('Login successful');
+                navigate('/add-transaction');
+            }
         }
     } catch (error) {
+        alert('尚未註冊帳號');
         console.error('Login error:', error);
     }
   };
@@ -64,6 +67,7 @@ const Login = () => {
             <button className="social-button twitter">T</button>
             <button className="social-button linkedin">L</button>
           </div>
+
         </div>
 
         <div className="divider">

@@ -7,11 +7,13 @@ module.exports = (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
-    jwt.verify(token, 'your_jwt_secret', (err, user) => {
+    jwt.verify(token, process.env.JWT_TOKEN, (err, decodedToken) => {
         if (err) {
             return res.status(403).json({ message: 'Invalid token' });
         }
-        req.user = user;
+        req.user = decodedToken;
+        req.userId = decodedToken.userId;
+        console.log('User ID:', req.userId);
         next();
     });
 };

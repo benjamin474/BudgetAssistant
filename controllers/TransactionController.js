@@ -3,6 +3,7 @@ const Transaction = require('../models/TransactionModel');
 exports.createTransaction = async (req, res) => {
     try {
         const userId = req.userId;
+        console.log('Creating transaction for user:', userId);
         const transaction = new Transaction({ ...req.body, user: userId });
         await transaction.save();
         res.status(201).send(transaction); // 201 Created
@@ -11,11 +12,12 @@ exports.createTransaction = async (req, res) => {
     }
 };
 
-exports.getAllTransaction = async (req, res) => {
+exports.getUserTransaction = async (req, res) => {
     try {
-        const transactions = await Transaction.find();
+        const transactions = await Transaction.find({ user: req.userId });
         res.send(transactions);
     } catch (error) {
+        console.error('Error fetching transactions:', error);
         res.status(500).send(`Error fetching transactions: ${error.message}`); // 500 Internal Server Error
     }
 };

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const transactionSchema = new mongoose.Schema({
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     date: String,
     amount: Number,
     description: String,
