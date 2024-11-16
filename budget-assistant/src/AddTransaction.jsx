@@ -164,7 +164,9 @@ function AddTransactionWithDate() {
     };
 
     const handleLogout = () => {
+        localStorage.removeItem('token');
         navigate('../login');
+        alert("Log out successfully.");
     }
 
     // 計算該天的總金額
@@ -191,6 +193,8 @@ function AddTransactionWithDate() {
                 dateFormat="yyyy/MM/dd"
                 inline
             />
+            <button onClick={handleLogout}>Log out</button>
+
 
             <form onSubmit={handleSubmit}>
                 <label>
@@ -273,7 +277,6 @@ function AddTransactionWithDate() {
             }}>
                 Query Transactions
             </button> */}
-            <button onClick={handleLogout}>Log out</button>
 
         </div >
     );
