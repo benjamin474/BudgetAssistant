@@ -23,7 +23,9 @@
     "react-datepicker": "^7.5.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",
+    "react-month-picker-simple": "^1.0.8",
     "react-scripts": "5.0.1",
+    "recharts": "^2.13.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
