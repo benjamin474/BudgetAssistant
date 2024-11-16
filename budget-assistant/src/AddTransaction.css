@@ -5,15 +5,7 @@ html,body{
     height: 100%;
 }
 
-.page-container{
-    overflow-y: scroll;
-    min-height: 100vh;
-    box-sizing: border-box;
-    padding: 20px;
-    overflow-y: auto;
 
-    height: 100%;
-}
 
 .transaction-grid {
     display: grid;
