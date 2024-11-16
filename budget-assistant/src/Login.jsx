@@ -20,36 +20,37 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const response = await fetch('http://localhost:3001/users/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: formData.email, password: formData.password }),
-        });
+      const response = await fetch('http://localhost:3001/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email, password: formData.password }),
+      });
 
-        if (!response.ok) {
-            if (response.status === 401) {
-                alert('密碼錯誤'); // Password incorrect
-            } else {
-                throw new Error('Login failed');
-            }
+      if (!response.ok) {
+        if (response.status === 401) {
+          alert('密碼錯誤'); // Password incorrect
         } else {
-            const data = await response.json();
-            if (data.success) {
-                localStorage.setItem('token', data.token); // Store the token
-                alert('Login successful');
-                navigate('/add-transaction');
-            }
+          throw new Error('Login failed');
         }
+      } else {
+        const data = await response.json();
+        if (data.success) {
+          localStorage.setItem('token', data.token); // Store the token
+          alert('Login successful');
+          navigate('/add-transaction');
+        }
+      }
     } catch (error) {
-        alert('尚未註冊帳號');
-        console.error('Login error:', error);
+      alert('尚未註冊帳號');
+      console.error('Login error:', error);
     }
   };
 
   return (
     <div className="login-page">
+      
       <div className="login-image-container">
-        <img 
+        <img
           src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
           alt="Login illustration"
           className="login-image"
@@ -57,10 +58,11 @@ const Login = () => {
       </div>
 
       <div className="login-container">
+        <h2 className='login-header'>歡迎來到記帳助手~</h2>
         <h2 className="login-header">Log In</h2>
 
         {/* Social media sign-in buttons */}
-        <div className="social-login">
+        {/* <div className="social-login">
           <p>Sign in with</p>
           <div className="social-buttons">
             <button className="social-button facebook"><img class='icon-set'></img></button>
@@ -72,7 +74,7 @@ const Login = () => {
 
         <div className="divider">
           <span>Or</span>
-        </div>
+        </div> */}
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">

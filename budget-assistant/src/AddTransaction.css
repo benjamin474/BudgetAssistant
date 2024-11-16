@@ -6,7 +6,7 @@ html,body{
 }
 
 .date-picker-container{
-    position: sticky;
+    display: center;
     top: 0;
     z-index: 10;
     background-color: white;
@@ -60,6 +60,7 @@ html,body{
 }
 
 button {
+    margin-top: 5px;
     align-self: flex-end;
     padding: 5px 10px;
     background-color: red;

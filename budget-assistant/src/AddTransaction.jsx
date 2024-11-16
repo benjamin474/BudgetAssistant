@@ -96,6 +96,9 @@ function AddTransactionWithDate() {
             kind, // 使用者選擇的分類
         };
 
+        console.log(selectedDate);
+        console.log(selectedDate.toISOString);
+
         try {
             console.log('Token:', token);
             // 透過API將交易儲存到後端資料庫
