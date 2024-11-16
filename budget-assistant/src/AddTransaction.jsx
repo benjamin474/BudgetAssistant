@@ -4,8 +4,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { jwtDecode } from 'jwt-decode';
 import { calculateTotalsForRange } from './transactionUtils';
 import { useNavigate } from 'react-router-dom';
-import fetchGPTResponse from './Axios';
-import TransactionCharts from './TransactionCharts';
+import './AddTransaction.css';
+import TransactionCharts from './TransactionCharts'; // 引入圖表組件
 
 function AddTransactionWithDate() {
     const [selectedDate, setSelectedDate] = useState(new Date()); // 預設為今天的日期
@@ -13,15 +13,11 @@ function AddTransactionWithDate() {
     const [endDate, setEndDate] = useState(new Date()); // 篩選的結束日期
     const [amount, setAmount] = useState(''); // 金額
     const [description, setDescription] = useState(''); // 描述
-    const [kind, setKind] = useState('');
+    const [kind, setKind] = useState('其他'); // 預設分類
     const [type, setType] = useState('expense'); // 交易類型，預設為支出
     const [transactions, setTransactions] = useState([]); // 所有交易紀錄
     const [filteredTransactions, setFilteredTransactions] = useState([]); // 選擇日期的交易紀錄
-    const [queryRange, setQueryRange] = useState('day');
-    const [editingTransactions, setEditingTransactions] = useState([]);
     const navigate = useNavigate();
-
-
 
     // 從後端獲取交易資料
     useEffect(() => {
@@ -29,6 +25,7 @@ function AddTransactionWithDate() {
             const token = localStorage.getItem('token');
             if (!token) {
                 console.error('No token found. Please log in.');
+                navigate('../login');
                 return;
             }
 
@@ -55,21 +52,18 @@ function AddTransactionWithDate() {
         fetchTransactions();
     }, []);
 
-
     const resetTime = (date) => {
         const newDate = new Date(date);
         newDate.setHours(0, 0, 0, 0);
         return newDate;
-    }
+    };
 
     useEffect(() => {
         if (Array.isArray(transactions)) {
-            const filtered = transactions.filter(
-                (transaction) => {
-                    const transactionDate = resetTime(new Date(transaction.date));
-                    return transactionDate >= resetTime(startDate) && transactionDate <= resetTime(endDate);
-                }
-            );
+            const filtered = transactions.filter((transaction) => {
+                const transactionDate = resetTime(new Date(transaction.date));
+                return transactionDate >= resetTime(startDate) && transactionDate <= resetTime(endDate);
+            });
             setFilteredTransactions(filtered);
         } else {
             console.error('Transactions is not an array:', transactions);
@@ -78,6 +72,8 @@ function AddTransactionWithDate() {
 
     // 新增交易處理
     const handleSubmit = async (e) => {
+        e.preventDefault();
+
         const token = localStorage.getItem('token');
         if (!token) {
             console.error('No token found. Please log in.');
@@ -87,32 +83,21 @@ function AddTransactionWithDate() {
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.userId; // Adjust this based on your token's structure
 
-
-
         const newTransaction = {
             user: userId, // Set the user ID
-            date: selectedDate.toLocaleDateString(),
+            date: selectedDate.toISOString().split('T')[0],
             amount: parseFloat(amount),
             description,
             type,
-            //gpt classified-------------------------------------------------------------------
-            kind: (type === 'expense') ? await fetchGPTResponse(description + "是食物, 日用品, 交通, 娛樂, 健康, 教育, 服飾, 居住, 通訊, 水電, 保險, 投資, 人情, 旅遊, 其他中的哪一類，返回前述最符合的一項，只能回答二或三個字") :
-                await fetchGPTResponse(description + "是薪資、投資、副業、租金、補助、禮金、退款、其他中的哪一類，返回前述最符合的一項，只能回答二個字"),
-            //如果要使用，在Axios.jsx加上你的金鑰.-------------------------------------------
-
+            kind, // 使用者選擇的分類
         };
 
-
-
         try {
-            const token = localStorage.getItem('token');
-            console.log('Token:', token);
-            // 透過API將交易儲存到後端資料庫
             const response = await fetch('http://localhost:3001/transactions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}` // 添加 Authorization header
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
                 body: JSON.stringify(newTransaction),
             });
@@ -129,17 +114,11 @@ function AddTransactionWithDate() {
             // 清空表單
             setAmount('');
             setDescription('');
+            setKind('其他');
         } catch (error) {
             console.error(`Failed to save transaction: ${error.message}`);
         }
     };
-
-    const handleEditTransaction = (transaction) => {
-        setAmount(transaction.amount.toString());
-        setDescription(transaction.description);
-        setEditingTransactions(transaction._id);
-    }
-
 
     // 刪除交易處理
     const handleDeleteTransaction = async (id) => {
@@ -148,13 +127,12 @@ function AddTransactionWithDate() {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}` // 添加 Authorization header
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
             });
 
             if (response.ok) {
-                // 更新狀態，移除刪除的交易
-                setTransactions(transactions.filter(transaction => transaction._id !== id));
+                setTransactions(transactions.filter((transaction) => transaction._id !== id));
             } else {
                 console.error(`Failed to delete transaction: ${await response.text()}`);
             }
@@ -165,36 +143,35 @@ function AddTransactionWithDate() {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        alert("Log out sussess");
         navigate('../login');
-        alert("Log out successfully.");
-    }
+    };
 
     // 計算該天的總金額
-    const { incomeTotal, expenseTotal, netTotal } = filteredTransactions.reduce((totals, transaction) => {
-        if (transaction.type == 'income') {
-            totals.incomeTotal += transaction.amount;
-        }
-        else if (transaction.type == 'expense') {
-            totals.expenseTotal += transaction.amount;
-        }
-        totals.netTotal = totals.incomeTotal - totals.expenseTotal;
-        return totals;
-    }, { incomeTotal: 0, expenseTotal: 0, netTotal: 0 });
+    const { incomeTotal, expenseTotal, netTotal } = filteredTransactions.reduce(
+        (totals, transaction) => {
+            if (transaction.type === 'income') {
+                totals.incomeTotal += transaction.amount;
+            } else if (transaction.type === 'expense') {
+                totals.expenseTotal += transaction.amount;
+            }
+            totals.netTotal = totals.incomeTotal - totals.expenseTotal;
+            return totals;
+        },
+        { incomeTotal: 0, expenseTotal: 0, netTotal: 0 }
+    );
 
     return (
-
-        <div style={{ maxHeight: '100vh', overflowY: 'auto', width: '100vw', padding: '20px' }}>
+        <div className='page-container'>
+            <button onClick={handleLogout}>Log out</button>
             <h2>請選擇日期，紀錄您的帳務~</h2>
 
-            {/* 日期選擇器，讓使用者選擇日期 */}
             <DatePicker
                 selected={selectedDate}
-                onChange={(date) => setSelectedDate(date)} // 當日期改變時更新選擇的日期
+                onChange={(date) => setSelectedDate(date)}
                 dateFormat="yyyy/MM/dd"
                 inline
             />
-            <button onClick={handleLogout}>Log out</button>
-
 
             <form onSubmit={handleSubmit}>
                 <label>
@@ -221,64 +198,65 @@ function AddTransactionWithDate() {
                         <option value="income">收入(Income)</option>
                     </select>
                 </label>
-                <button className="tn btn-binfo" type="submit">記帳</button>
+                <label>
+                    分類(Kind):
+                    <select value={kind} onChange={(e) => setKind(e.target.value)}>
+                        {type === 'expense' ? (
+                            <>
+                                <option value="食物">食物</option>
+                                <option value="日用品">日用品</option>
+                                <option value="交通">交通</option>
+                                <option value="娛樂">娛樂</option>
+                                <option value="其他">其他</option>
+                            </>
+                        ) : (
+                            <>
+                                <option value="薪資">薪資</option>
+                                <option value="投資">投資</option>
+                                <option value="副業">副業</option>
+                                <option value="其他">其他</option>
+                            </>
+                        )}
+                    </select>
+                </label>
+                <button type="submit">記帳</button>
             </form>
 
-            {/* 篩選日期範圍的部分 */}
             <h2>查詢範圍</h2>
             <DatePicker
                 selected={startDate}
                 onChange={(date) => setStartDate(date)}
                 dateFormat="yyyy/MM/dd"
             />
-            <div><h1>To</h1></div>
+            <div>To</div>
             <DatePicker
                 selected={endDate}
                 onChange={(date) => setEndDate(date)}
                 dateFormat="yyyy/MM/dd"
             />
 
-            {/* 顯示篩選後的交易紀錄 */}
             <h3>以下是您從 {startDate.toLocaleDateString()} 到 {endDate.toLocaleDateString()} 的帳務~</h3>
-            <div style={{ maxHeight: '300px', overflowY: 'scroll' }}>
-                <ul>
-                    {filteredTransactions
-                        .sort((a, b) => new Date(a.date) - new Date(b.date))
-                        .map((transaction) => (
-                            <li key={transaction._id}>
-                                {transaction.date}: {transaction.type} - {transaction.amount} ({transaction.description}) (分類:{transaction.kind})
-                                {/* 刪除按鈕，點擊時會調用 handleDeleteTransaction 函數 */}
-                                <button onClick={() => {
-                                    handleDeleteTransaction(transaction._id);
-                                }}>刪除</button>
-                            </li>
-                        ))}
-                </ul>
+            <div className="transaction-grid">
+                {filteredTransactions.map((transaction) => (
+                    <div key={transaction._id} className="transaction-item">
+                        <div className="transaction-kind">{transaction.kind}</div>
+                        <div className="transaction-details">
+                            <div>{transaction.date}</div>
+                            <div>{transaction.type === 'income' ? '+' : '-'}{transaction.amount} 元</div>
+                            <div>{transaction.description || '無描述'}</div>
+                        </div>
+                        <button onClick={() => handleDeleteTransaction(transaction._id)}>刪除</button>
+                    </div>
+                ))}
             </div>
-            {/* 顯示該天的總金額 */}
+
             <h3>您總共賺到：{incomeTotal}元</h3>
             <h3>您總共花費：{expenseTotal}元</h3>
-            <h1>淨值   ：{netTotal}</h1>
-            {/* 顯示圖表 */}
+            <h1>淨值：{netTotal}</h1>
+
+            {/* 圖表部分 */}
             <TransactionCharts transactions={filteredTransactions} />
-
-            {/* 範圍查詢 */}
-            {/* <label htmlFor="queryRange">Select Range:</label>
-            <select id="queryRange" value={queryRange} onChange={(e) => setQueryRange(e.target.value)}>
-                <option value="day">Day</option>
-                <option value="week">Week</option>
-                <option value="month">Month</option>
-                <option value="year">Year</option>
-            </select> */}
-
-            {/* <button className="btn btn-danger" onClick={() => {
-                const { incomeTotal, expenseTotal } = calculateTotalsForRange(transactions, queryRange);
-                console.log(`Income: ${incomeTotal}, Expense: ${expenseTotal}`);
-            }}>
-                Query Transactions
-            </button> */}
-
-        </div >
+        </div>
     );
 }
 
