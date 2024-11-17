@@ -155,62 +155,7 @@ const TransactionCharts = ({ transactions = [] }) => {
       {/* Bar Chart */}
 
 
-      {barData.length > -1 && (
 
-
-
-        <div className="p-4 bg-white rounded-lg shadow">
-          {/* 左側: 刪除按鈕 */}
-          <div style={{ flex: 0.2, paddingLeft: '20px' }}>
-            <button onClick={() => setFlag(!flag)}>
-              選擇
-            </button>
-            {flag && (
-              <aside
-                style={{
-                  position: 'relative',
-                  top: '-50px', // 可根據需求調整位置
-                  left: '120px',
-                  backgroundColor: 'white',
-                  border: '1px solid #ccc',
-                  borderRadius: '8px',
-                  padding: '10px',
-                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                  zIndex: 10,
-                  width: '200px' // 調整寬度以適合內容
-                }}
-              >
-                <MonthPicker
-                  handleChange={(date) => {
-                    setSelectedMonthOfBar(date.getMonth() + 1);
-                    setSelectedYearOfBar(date.getFullYear());
-
-
-                  }}
-                />
-                <button onClick={() => setFlag(!flag)} className="mb-4 p-2 bg-red-500 text-black rounded">
-                  X
-                </button>
-              </aside>
-
-            )}
-          </div>
-          <h3 className="text-lg font-semibold mb-4">{selectedYearOfBar}年{selectedMonthOfBar}月收支圖</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={barData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey={selectedKind} />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="income" name="收入" fill="#4CAF50" />
-              <Bar dataKey="expense" name="支出" fill="#FF5252" />
-              <Bar dataKey="budget" name="預算" fill="#FF5252" />
-            </BarChart>
-          </ResponsiveContainer>
-
-        </div>
-      )}
 
 
 
@@ -271,6 +216,64 @@ const TransactionCharts = ({ transactions = [] }) => {
           </ResponsiveContainer>
         </div>
       )}
+
+      {barData.length > -1 && (
+
+
+
+        <div className="p-4 bg-white rounded-lg shadow">
+          {/* 左側: 刪除按鈕 */}
+          <div style={{ flex: 0.2, paddingLeft: '20px' }}>
+            <button onClick={() => setFlag(!flag)}>
+              選擇
+            </button>
+            {flag && (
+              <aside
+                style={{
+                  position: 'relative',
+                  top: '-50px', // 可根據需求調整位置
+                  left: '120px',
+                  backgroundColor: 'white',
+                  border: '1px solid #ccc',
+                  borderRadius: '8px',
+                  padding: '10px',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                  zIndex: 10,
+                  width: '200px' // 調整寬度以適合內容
+                }}
+              >
+                <MonthPicker
+                  handleChange={(date) => {
+                    setSelectedMonthOfBar(date.getMonth() + 1);
+                    setSelectedYearOfBar(date.getFullYear());
+
+
+                  }}
+                />
+                <button onClick={() => setFlag(!flag)} className="mb-4 p-2 bg-red-500 text-black rounded">
+                  X
+                </button>
+              </aside>
+
+            )}
+          </div>
+          <h3 className="text-lg font-semibold mb-4">{selectedYearOfBar}年{selectedMonthOfBar}月收支圖</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={barData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey={selectedKind} />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="income" name="收入" fill="#4CAF50" />
+              <Bar dataKey="expense" name="支出" fill="#FF5252" />
+              <Bar dataKey="budget" name="預算" fill="#FF5252" />
+            </BarChart>
+          </ResponsiveContainer>
+
+        </div>
+      )}
+
       {/* Line Chart */}
       {lineChartData.length > 0 && (
         <div className="p-4 bg-white rounded-lg shadow">
