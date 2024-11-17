@@ -27,6 +27,7 @@ input {
     border: none;
     cursor: pointer;
     box-sizing: border-box;
+    margin: 10px;
 }
   
 .link {

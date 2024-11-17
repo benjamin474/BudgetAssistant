@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
+import axios from 'axios';
 import 'react-datepicker/dist/react-datepicker.css';
-
+import { jwtDecode } from 'jwt-decode';
 import { calculateTotalsForRange } from './transactionUtils';
+import { useNavigate } from 'react-router-dom';
+import './AddTransaction.css';
+import TransactionCharts from './TransactionCharts'; // 引入圖表組件
 
 function AddTransactionWithDate() {
     const [selectedDate, setSelectedDate] = useState(new Date()); // 預設為今天的日期
@@ -10,77 +14,130 @@ function AddTransactionWithDate() {
     const [endDate, setEndDate] = useState(new Date()); // 篩選的結束日期
     const [amount, setAmount] = useState(''); // 金額
     const [description, setDescription] = useState(''); // 描述
+    const [kind, setKind] = useState(''); // 預設分類
     const [type, setType] = useState('expense'); // 交易類型，預設為支出
     const [transactions, setTransactions] = useState([]); // 所有交易紀錄
     const [filteredTransactions, setFilteredTransactions] = useState([]); // 選擇日期的交易紀錄
     const [queryRange, setQueryRange] = useState('day');
     const [editingTransactions, setEditingTransactions] = useState([]);
+    const token = localStorage.getItem('token');
+    const navigate = useNavigate();
 
     // 從後端獲取交易資料
     useEffect(() => {
         const fetchTransactions = async () => {
-            const response = await fetch('http://localhost:3001/transactions');
-            const data = await response.json();
-            setTransactions(data);
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.error('No token found. Please log in.');
+                navigate('../login');
+                return;
+            }
+            try {
+                const response = await fetch('http://localhost:3001/transactions', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error fetching transactions: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                setTransactions(data);
+            } catch (error) {
+                console.error('Failed to fetch transactions:', error);
+            }
         };
 
         fetchTransactions();
-
     }, []);
-
 
     const resetTime = (date) => {
         const newDate = new Date(date);
         newDate.setHours(0, 0, 0, 0);
         return newDate;
-    }
+    };
 
+    //特定日期抓資料
     useEffect(() => {
-        const filtered = transactions.filter(
-            (transaction) => {
-                // const transactionDate = new Date(transaction.date).toLocaleDateString();
-                // return transactionDate >= startDate.toLocaleDateString() && transactionDate <= endDate.toLocaleDateString();
+        if (Array.isArray(transactions)) {
+            const filtered = transactions.filter((transaction) => {
                 const transactionDate = resetTime(new Date(transaction.date));
                 return transactionDate >= resetTime(startDate) && transactionDate <= resetTime(endDate);
-            }
-        );
-        setFilteredTransactions(filtered);
+            });
+            setFilteredTransactions(filtered);
+        } else {
+            console.error('Transactions is not an array:', transactions);
+        }
     }, [startDate, endDate, transactions]);
 
     // 新增交易處理
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('No token found. Please log in.');
+            return;
+        }
+
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken.userId; // Adjust this based on your token's structure
+
         const newTransaction = {
-            date: selectedDate.toLocaleDateString(), // 使用選擇的日期
-            amount: parseFloat(amount), // 將金額轉換為數字
+            user: userId, // Set the user ID
+            date: selectedDate.toISOString().split('T')[0],
+            amount: parseFloat(amount),
             description,
             type,
+            kind, // 使用者選擇的分類
         };
 
-        // 透過API將交易儲存到後端資料庫
-        const response = await fetch('http://localhost:3001/transactions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newTransaction),
-        });
+        console.log(selectedDate);
+        console.log(selectedDate.toISOString);
 
-        const savedTransaction = await response.json();
+        try {
+            console.log('Token:', token);
+            // 透過API將交易儲存到後端資料庫
+            const response = await fetch('http://localhost:3001/transactions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(newTransaction),
+            });
 
-        // 更新狀態
-        setTransactions([...transactions, savedTransaction]);
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
 
-        // 清空表單
-        setAmount('');
-        setDescription('');
+            const savedTransaction = await response.json();
+
+            // 更新狀態
+            setTransactions([...transactions, savedTransaction]);
+
+            // 清空表單
+            setAmount('');
+            setDescription('');
+            setKind('其他');
+        } catch (error) {
+            console.error(`Failed to save transaction: ${error.message}`);
+        }
     };
-
-    const handleEditTransaction = (transaction) =>{
-        setAmount(transaction.amount.toString());
+    //編輯交易處理
+    const handleEditTransaction = (transaction) => {
+        console.log("Now we're going to edit your transaction")
+        setAmount(transaction.amount);
         setDescription(transaction.description);
-        setEditingTransactions(transaction._id);
+        setType(transaction.type);
+        setKind(transaction.kind);
+        setSelectedDate(new Date(transaction.date));
+
+        handleDeleteTransaction(transaction._id);
     }
 
 
@@ -89,11 +146,14 @@ function AddTransactionWithDate() {
         try {
             const response = await fetch(`http://localhost:3001/transactions/${id}`, {
                 method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
             });
 
             if (response.ok) {
-                // 更新狀態，移除刪除的交易
-                setTransactions(transactions.filter(transaction => transaction._id !== id));
+                setTransactions(transactions.filter((transaction) => transaction._id !== id));
             } else {
                 console.error(`Failed to delete transaction: ${await response.text()}`);
             }
@@ -102,30 +162,77 @@ function AddTransactionWithDate() {
         }
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        alert("Log out sussess");
+        navigate('../login');
+    };
+
     // 計算該天的總金額
-    const { incomeTotal, expenseTotal, netTotal } = filteredTransactions.reduce((totals, transaction) => {
-        if (transaction.type == 'income') {
-            totals.incomeTotal += transaction.amount;
+    const { incomeTotal, expenseTotal, netTotal, budgetTotal, remainingBudget } = filteredTransactions.reduce(
+        (totals, transaction) => {
+            if (transaction.type === 'budget') {
+                totals.budgetTotal += transaction.amount;
+            }
+            else if (transaction.type === 'income') {
+                totals.incomeTotal += transaction.amount;
+            } else if (transaction.type === 'expense') {
+                totals.expenseTotal += transaction.amount;
+            }
+            totals.netTotal = totals.incomeTotal - totals.expenseTotal;
+            totals.remainingBudget = totals.budgetTotal - totals.expenseTotal;
+            return totals;
+        },
+        { incomeTotal: 0, expenseTotal: 0, netTotal: 0, budgetTotal: 0, remainingBudget: 0 }
+
+    );
+
+    // 下載成excel
+    const handleDownload = async () => {
+
+        const userId = jwtDecode(token).userId;
+        try {
+            // 發送 GET 請求下載 Excel
+            const response = await axios.get(`http://localhost:3001/export-excel/${userId}`, {
+                responseType: 'blob', // 指定返回為二進制文件
+            });
+
+            // 創建下載連結
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `transaction.xlsx`); // 設定下載的檔案名
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            console.error('Error downloading Excel:', error);
+            alert('Failed to download the file. Please try again.');
         }
-        else if (transaction.type == 'expense') {
-            totals.expenseTotal += transaction.amount;
-        }
-        totals.netTotal = totals.incomeTotal - totals.expenseTotal;
-        return totals;
-    }, { incomeTotal: 0, expenseTotal: 0, netTotal: 0 });
+    };
 
     return (
-        <div>
+        <div style={{
+            height: 'auto',
+            minHeight: '100vh',
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            padding: '20px',
+            boxSizing: 'border-box',
+        }}>
+            <button onClick={handleLogout}>Log out</button>
             <h2>請選擇日期，紀錄您的帳務~</h2>
 
-            {/* 日期選擇器，讓使用者選擇日期 */}
-            <DatePicker
-                selected={selectedDate}
-                onChange={(date) => setSelectedDate(date)} // 當日期改變時更新選擇的日期
-                dateFormat="yyyy/MM/dd"
-                inline
-            />
-
+            <div className='date-picker-container'>
+                <DatePicker
+                    selected={selectedDate}
+                    onChange={(date) => setSelectedDate(date)}
+                    // 暫時+1
+                    dateFormat="yyyy/MM/dd"
+                    inline
+                />
+            </div>
             <form onSubmit={handleSubmit}>
                 <label>
                     金額(Amount):
@@ -149,59 +256,80 @@ function AddTransactionWithDate() {
                     <select value={type} onChange={(e) => setType(e.target.value)}>
                         <option value="expense">支出(Expense)</option>
                         <option value="income">收入(Income)</option>
+                        <option value="budget">預算(Budget)</option>
                     </select>
                 </label>
-                <button className="btn btn-info" type="submit">記帳</button>
+                <label>
+                    分類(Kind):
+                    <select value={kind} onChange={(e) => setKind(e.target.value)}>
+                        {type === 'expense' ? (
+                            <>
+                                <option value="食物">食物</option>
+                                <option value="日用品">日用品</option>
+                                <option value="交通">交通</option>
+                                <option value="娛樂">娛樂</option>
+                                <option value="其他">其他</option>
+                            </>
+                        ) : type==='income' ? (
+                            <>
+                                <option value="薪資">薪資</option>
+                                <option value="投資">投資</option>
+                                <option value="副業">副業</option>
+                                <option value="其他">其他</option>
+                            </>
+                            
+                        ) : (
+                            <option value="預算">預算</option>
+                        )}
+                    </select>
+                </label>
+                <button type="submit">記帳</button>
             </form>
 
-            {/* 篩選日期範圍的部分 */}
             <h2>查詢範圍</h2>
             <DatePicker
                 selected={startDate}
                 onChange={(date) => setStartDate(date)}
                 dateFormat="yyyy/MM/dd"
             />
-            <div><h1>To</h1></div>
+            <div>To</div>
             <DatePicker
                 selected={endDate}
                 onChange={(date) => setEndDate(date)}
                 dateFormat="yyyy/MM/dd"
             />
 
-            {/* 顯示篩選後的交易紀錄 */}
-            <h3>以下是您從{startDate.toLocaleDateString()} 到 {endDate.toLocaleDateString()} 的帳務~</h3>
-            <ul>
+            <h3>以下是您從 {startDate.toLocaleDateString()} 到 {endDate.toLocaleDateString()} 的帳務~</h3>
+            <div className="transaction-grid">
                 {filteredTransactions.map((transaction) => (
-                    <li key={transaction._id}>
-                        {transaction.date}: {transaction.type} - {transaction.amount} ({transaction.description})
-                        {/* 刪除按鈕，點擊時會調用 handleDeleteTransaction 函數 */}
-                        
+                    <div key={transaction._id} className="transaction-item">
+                        <div className="transaction-kind">{transaction.kind}</div>
+                        <div className="transaction-details">
+                            <div>{transaction.date}</div>
+                            <div>{transaction.type=='expense'?'支出':transaction.type=='income'?'收入':'預算'}：<h1>{transaction.amount} 元</h1> </div>
+                            <div>{transaction.description || '無描述'}</div>
+                        </div>
+                        <button onClick={() => handleEditTransaction(transaction)}>編輯</button>
                         <button onClick={() => handleDeleteTransaction(transaction._id)}>刪除</button>
-                    </li>
+                    </div>
                 ))}
-            </ul>
+            </div>
+            
+                <h3>您總共賺到：{incomeTotal}元</h3>
+                <h3>您總共花費：{expenseTotal}元</h3>
+                <h2>總預算：{budgetTotal}元</h2>
+                <h2>淨值：{netTotal}</h2>                
+                <h1>剩餘可用金額：{remainingBudget}元</h1>
 
-            {/* 顯示該天的總金額 */}
-            <h3>您總共賺到：{incomeTotal}元</h3>
-            <h3>您總共花費：{expenseTotal}元</h3>
-            <h1>淨值   ：{netTotal}</h1>
 
-            {/* 範圍查詢 */}
-            {/* <label htmlFor="queryRange">Select Range:</label>
-            <select id="queryRange" value={queryRange} onChange={(e) => setQueryRange(e.target.value)}>
-                <option value="day">Day</option>
-                <option value="week">Week</option>
-                <option value="month">Month</option>
-                <option value="year">Year</option>
-            </select> */}
 
-            {/* <button className="btn btn-danger" onClick={() => {
-                const { incomeTotal, expenseTotal } = calculateTotalsForRange(transactions, queryRange);
-                console.log(`Income: ${incomeTotal}, Expense: ${expenseTotal}`);
-            }}>
-                Query Transactions
-            </button> */}
-        </div>
+            {/* 圖表部分 */}
+            <div className='chart-container'>
+                <TransactionCharts transactions={filteredTransactions} />
+            </div>
+            <button onClick={handleDownload}>Download Excel</button>
+
+        </div >
     );
 }
 
