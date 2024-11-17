@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './LoginRegister.css';
+// import './LoginRegister.css';
 import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
