@@ -133,6 +133,7 @@ function AddTransactionWithDate() {
         console.log("Now we're going to edit your transaction")
         setAmount(transaction.amount);
         setDescription(transaction.description);
+        setType(transaction.type);
         setKind(transaction.kind);
         setSelectedDate(new Date(transaction.date));
 
@@ -305,7 +306,7 @@ function AddTransactionWithDate() {
                         <div className="transaction-kind">{transaction.kind}</div>
                         <div className="transaction-details">
                             <div>{transaction.date}</div>
-                            <div><h1>{transaction.amount} 元</h1> </div>
+                            <div>{transaction.type=='expense'?'支出':transaction.type=='income'?'收入':'預算'}：<h1>{transaction.amount} 元</h1> </div>
                             <div>{transaction.description || '無描述'}</div>
                         </div>
                         <button onClick={() => handleEditTransaction(transaction)}>編輯</button>
