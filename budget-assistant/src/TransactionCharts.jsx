@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import MonthPicker from 'react-month-picker-simple';
 
-import { 
-  BarChart, 
-  Bar, 
-  PieChart, 
+import {
+  BarChart,
+  Bar,
+  PieChart,
   Pie,
   LineChart,
   Line,
   Cell,
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   Legend,
-  ResponsiveContainer 
+  ResponsiveContainer
 } from 'recharts';
 
 const TransactionCharts = ({ transactions = [] }) => {
@@ -61,7 +61,7 @@ const TransactionCharts = ({ transactions = [] }) => {
       value: amount
     }))
     .filter(item => item.value > 0);
-    const ExpensePieData = Object.entries(ExpenseKindTotals)
+  const ExpensePieData = Object.entries(ExpenseKindTotals)
     .map(([kind, amount]) => ({
       name: kind || '其他',
       value: amount
@@ -77,26 +77,30 @@ const TransactionCharts = ({ transactions = [] }) => {
       acc[`${year}-${month}`] = {
         date,
         income: 0,
-        expense: 0
+        expense: 0,
+        budget: 0
       };
     }
     const transactionMonth = date.getMonth() + 1;
     const transactionYear = date.getFullYear();
-        console.log(selectedMonthOfBar);
-        console.log(selectedYearOfBar);
-        console.log(transactionMonth);
-        console.log(transactionYear);
-        console.log("           ");
+    console.log(selectedMonthOfBar);
+    console.log(selectedYearOfBar);
+    console.log(transactionMonth);
+    console.log(transactionYear);
+    console.log("           ");
     if (selectedMonthOfBar == transactionMonth && selectedYearOfBar == transactionYear) {
-        
-        if(transaction.type === 'income'){
-            acc[`${year}-${month}`].income += Math.abs(transaction.amount);
-            
-        }else{
-            acc[`${year}-${month}`].expense += Math.abs(transaction.amount);
-        }
+
+      if (transaction.type === 'income') {
+        acc[`${year}-${month}`].income += Math.abs(transaction.amount);
+
+      } else if (transaction.type === 'expense') {
+        acc[`${year}-${month}`].expense += Math.abs(transaction.amount);
+      } else if (transaction.type === 'budget') {
+        acc[`${year}-${month}`].budget += Math.abs(transaction.amount);
+      }
+
     }
-    
+
     return acc;
   }, {});
 
@@ -112,9 +116,9 @@ const TransactionCharts = ({ transactions = [] }) => {
         const startDate = new Date(d.getFullYear(), 0, 1); // 每年的第一天
         const days = Math.floor((d - startDate) / (24 * 60 * 60 * 1000)); // 計算距離當年第一天的天數
         const week = Math.ceil((days + 1) / 7); // 計算週數
-        return `${(d.getFullYear()).toString() +'年'+ (week).toString()}週`;
+        return `${(d.getFullYear()).toString() + '年' + (week).toString()}週`;
       case 'month':
-        return `${(d.getFullYear()).toString() +'年'+ (d.getMonth() + 1 ).toString()}月`;
+        return `${(d.getFullYear()).toString() + '年' + (d.getMonth() + 1).toString()}月`;
       case 'year':
         return `${d.getFullYear()}年`;
       default:
@@ -132,11 +136,11 @@ const TransactionCharts = ({ transactions = [] }) => {
         };
       }
       const kind = transaction.kind || '其他';
-      if(selectedKind === '全部'){
-      acc[timePeriodKey][kind] = (acc[timePeriodKey][kind] || 0) + Math.abs(transaction.amount);
-      }else{
-        if(kind === selectedKind){
-            acc[timePeriodKey][kind] = (acc[timePeriodKey][kind] || 0) + Math.abs(transaction.amount);
+      if (selectedKind === '全部') {
+        acc[timePeriodKey][kind] = (acc[timePeriodKey][kind] || 0) + Math.abs(transaction.amount);
+      } else {
+        if (kind === selectedKind) {
+          acc[timePeriodKey][kind] = (acc[timePeriodKey][kind] || 0) + Math.abs(transaction.amount);
         }
       }
     }
@@ -149,48 +153,48 @@ const TransactionCharts = ({ transactions = [] }) => {
   return (
     <div className="w-full space-y-8">
       {/* Bar Chart */}
-      
-          
+
+
       {barData.length > -1 && (
 
-        
+
 
         <div className="p-4 bg-white rounded-lg shadow">
-            {/* 左側: 刪除按鈕 */}
-        <div style={{ flex: 0.2, paddingLeft: '20px' }}>
-        <button onClick={() => setFlag(!flag)}>
-          選擇
-        </button>
-        {flag && (
-            <aside
-              style={{
-                position: 'absolute',
-                top: '50px', // 可根據需求調整位置
-                left: '120px',
-                backgroundColor: 'white',
-                border: '1px solid #ccc',
-                borderRadius: '8px',
-                padding: '10px',
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                zIndex: 10,
-                width: '200px' // 調整寬度以適合內容
-              }}
-            >
-              <MonthPicker
-                handleChange={(date) => {
-                  setSelectedMonthOfBar(date.getMonth() + 1);
-                  setSelectedYearOfBar(date.getFullYear());
-                  
-                 
+          {/* 左側: 刪除按鈕 */}
+          <div style={{ flex: 0.2, paddingLeft: '20px' }}>
+            <button onClick={() => setFlag(!flag)}>
+              選擇
+            </button>
+            {flag && (
+              <aside
+                style={{
+                  position: 'relative',
+                  top: '-50px', // 可根據需求調整位置
+                  left: '120px',
+                  backgroundColor: 'white',
+                  border: '1px solid #ccc',
+                  borderRadius: '8px',
+                  padding: '10px',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                  zIndex: 10,
+                  width: '200px' // 調整寬度以適合內容
                 }}
-              />
-              <button onClick={() => setFlag(!flag)} className="mb-4 p-2 bg-red-500 text-black rounded">
-            X
-          </button>
-            </aside>
-            
-          )}
-      </div>
+              >
+                <MonthPicker
+                  handleChange={(date) => {
+                    setSelectedMonthOfBar(date.getMonth() + 1);
+                    setSelectedYearOfBar(date.getFullYear());
+
+
+                  }}
+                />
+                <button onClick={() => setFlag(!flag)} className="mb-4 p-2 bg-red-500 text-black rounded">
+                  X
+                </button>
+              </aside>
+
+            )}
+          </div>
           <h3 className="text-lg font-semibold mb-4">{selectedYearOfBar}年{selectedMonthOfBar}月收支圖</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={barData}>
@@ -201,18 +205,78 @@ const TransactionCharts = ({ transactions = [] }) => {
               <Legend />
               <Bar dataKey="income" name="收入" fill="#4CAF50" />
               <Bar dataKey="expense" name="支出" fill="#FF5252" />
+              <Bar dataKey="budget" name="預算" fill="#FF5252" />
             </BarChart>
           </ResponsiveContainer>
-          
+
         </div>
       )}
 
+
+
+
+      {/* Pie Chart */}
+      {IncomePieData.length > 0 && (
+        <div className="p-4 bg-white rounded-lg shadow">
+          <h3 className="text-lg font-semibold mb-4">收入類別分布</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={IncomePieData}
+                cx="50%"
+                cy="50%"
+                labelLine={true}
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                outerRadius={100}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {IncomePieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value) => `$${value}`} />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+
+
+        </div>
+
+      )}
+
+      {/* Pie Chart */}
+      {ExpensePieData.length > 0 && (
+        <div className="p-4 bg-white rounded-lg shadow">
+          <h3 className="text-lg font-semibold mb-4">支出類別分布</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={ExpensePieData}
+                cx="50%"
+                cy="50%"
+                labelLine={true}
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                outerRadius={100}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {ExpensePieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value) => `$${value}`} />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      )}
       {/* Line Chart */}
       {lineChartData.length > 0 && (
         <div className="p-4 bg-white rounded-lg shadow">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold">支出類別趨勢</h3>
-            <select 
+            <select
               value={timeRange}
               onChange={(e) => setTimeRange(e.target.value)}
               className="p-2 border rounded"
@@ -221,7 +285,7 @@ const TransactionCharts = ({ transactions = [] }) => {
               <option value="month">月</option>
               <option value="year">年</option>
             </select>
-            <select 
+            <select
               value={selectedKind}
               onChange={(e) => setSelectedKind(e.target.value)}
               className="p-2 border rounded"
@@ -264,66 +328,10 @@ const TransactionCharts = ({ transactions = [] }) => {
         </div>
       )}
 
-    
+    </div>
 
-      {/* Pie Chart */}
-      {IncomePieData.length > 0 && (
-        <div className="p-4 bg-white rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">收入類別分布</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={IncomePieData}
-                cx="50%"
-                cy="50%"
-                labelLine={true}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {IncomePieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip formatter={(value) => `$${value}`} />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-
-          
-        </div>
-        
-      )}
-
-      {/* Pie Chart */}
-      {ExpensePieData.length > 0 && (
-        <div className="p-4 bg-white rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">支出類別分布</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={ExpensePieData}
-                cx="50%"
-                cy="50%"
-                labelLine={true}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {ExpensePieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip formatter={(value) => `$${value}`} />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-      )}
-
-      </div>
   );
+
+
 };
 export default TransactionCharts;

@@ -55,10 +55,10 @@ function AddTransactionWithDate() {
         fetchTransactions();
     }, []);
 
-    const formatDate  = (date) => {
+    const formatDate = (date) => {
         const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2,'0');
-        const day = String(date.getDate()).padStart(2,'0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
         return `${year}/${month}/${day}`;
     }
 
@@ -277,14 +277,14 @@ function AddTransactionWithDate() {
                                 <option value="娛樂">娛樂</option>
                                 <option value="其他">其他</option>
                             </>
-                        ) : type==='income' ? (
+                        ) : type === 'income' ? (
                             <>
                                 <option value="薪資">薪資</option>
                                 <option value="投資">投資</option>
                                 <option value="副業">副業</option>
                                 <option value="其他">其他</option>
                             </>
-                            
+
                         ) : (
                             <option value="預算">預算</option>
                         )}
@@ -308,25 +308,41 @@ function AddTransactionWithDate() {
 
             <h3>以下是您從 {formatDate(startDate)} 到 {formatDate(endDate)} 的帳務~</h3>
             <div className="transaction-grid">
-                {filteredTransactions.map((transaction) => (
-                    <div key={transaction._id} className="transaction-item">
-                        <div className="transaction-kind">{transaction.kind}</div>
-                        <div className="transaction-details">
-                            <div>{transaction.date}</div>
-                            <div>{transaction.type=='expense'?'支出':transaction.type=='income'?'收入':'預算'}：<h1>{transaction.amount} 元</h1> </div>
-                            <div>{transaction.description || '無描述'}</div>
+                {filteredTransactions
+                    .sort((a, b) => {
+                        const dateDiff = new Date(a.date) - new Date(b.date); // 日期由新到舊
+                        console.log("DateDiff is : " + dateDiff);
+                        if (dateDiff !== 0) return dateDiff;
+                        return b.amount - a.amount; // 同日期按金額由大到小
+                    })
+                    .map((transaction) => (
+                        <div key={transaction._id} className="transaction-item">
+                            <div className="transaction-kind">{transaction.kind}</div>
+                            <div className="transaction-details">
+                                <div>{transaction.date}</div>
+                                <div>
+                                    {transaction.type === 'expense'
+                                        ? '支出'
+                                        : transaction.type === 'income'
+                                            ? '收入'
+                                            : '預算'}{' '}
+                                    ：<h1>{transaction.amount} 元</h1>
+                                </div>
+                                <div>{transaction.description || '無描述'}</div>
+                            </div>
+                            <button onClick={() => handleEditTransaction(transaction)}>編輯</button>
+                            <button onClick={() => handleDeleteTransaction(transaction._id)}>刪除</button>
                         </div>
-                        <button onClick={() => handleEditTransaction(transaction)}>編輯</button>
-                        <button onClick={() => handleDeleteTransaction(transaction._id)}>刪除</button>
-                    </div>
-                ))}
+                    ))}
             </div>
-            
-                <h3>您總共賺到：{incomeTotal}元</h3>
-                <h3>您總共花費：{expenseTotal}元</h3>
-                <h2>總預算：{budgetTotal}元</h2>
-                <h2>淨值：{netTotal}</h2>                
-                <h1>剩餘可用金額：{remainingBudget}元</h1>
+
+
+
+            <h3>您總共賺到：{incomeTotal}元</h3>
+            <h3>您總共花費：{expenseTotal}元</h3>
+            <h2>總預算：{budgetTotal}元</h2>
+            <h2>淨值：{netTotal}</h2>
+            <h1>預算剩餘：{remainingBudget}元</h1>
 
 
 
@@ -334,7 +350,7 @@ function AddTransactionWithDate() {
             <div className='chart-container'>
                 <TransactionCharts transactions={filteredTransactions} />
             </div>
-            <button onClick={handleDownload}>Download Excel</button>
+            <button onClick={handleDownload}>匯出歷史紀錄</button>
 
         </div >
     );
