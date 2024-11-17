@@ -55,6 +55,13 @@ function AddTransactionWithDate() {
         fetchTransactions();
     }, []);
 
+    const formatDate  = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2,'0');
+        const day = String(date.getDate()).padStart(2,'0');
+        return `${year}/${month}/${day}`;
+    }
+
     const resetTime = (date) => {
         const newDate = new Date(date);
         newDate.setHours(0, 0, 0, 0);
@@ -299,7 +306,7 @@ function AddTransactionWithDate() {
                 dateFormat="yyyy/MM/dd"
             />
 
-            <h3>以下是您從 {startDate.toLocaleDateString()} 到 {endDate.toLocaleDateString()} 的帳務~</h3>
+            <h3>以下是您從 {formatDate(startDate)} 到 {formatDate(endDate)} 的帳務~</h3>
             <div className="transaction-grid">
                 {filteredTransactions.map((transaction) => (
                     <div key={transaction._id} className="transaction-item">
