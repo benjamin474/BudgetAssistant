@@ -11,6 +11,7 @@ const bcrypt = require('bcryptjs');
 const User = require('./models/UserModel'); 
 const TransactionRouter = require('./routes/TransactionRoute');
 const UserRouter = require('./routes/UserRoute');
+const CustomizedKindRouter = require('./routes/customizedKindRoute');
 
 const exportMongoToExcel = require('./exportMongoToExcel');
 const app = express();
@@ -28,7 +29,7 @@ mongoose.connect(process.env.MONGODB_URI || process.env.DATABASE_URL, {
 
 app.use('/transactions', TransactionRouter);
 app.use('/users', UserRouter);
-
+app.use('/customized-kinds', CustomizedKindRouter);
 let otpStore = {}; // Temporary OTP storage
 
 // Nodemailer setup
@@ -119,37 +120,6 @@ app.get('/export-excel/:user', async (req, res) => {
     } catch (error) {
         console.error('Error exporting Excel:', error.message);
         res.status(500).send(error.message);
-    }
-});
-
-// User Login
-app.post('/users/login', async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(404).json({ success: false, message: 'User not found' });
-        }
-
-        if (user.password === password) { // Compare plain text password
-            return res.status(200).json({ success: true, message: 'Login successful' });
-        } else {
-            return res.status(401).json({ success: false, message: 'Invalid password' });
-        }
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Error during login' });
-    }
-});
-
-// User Registration
-app.post('/users/register', async (req, res) => {
-    const { email, username, password } = req.body;
-    try {
-        const user = new User({ email, username, password }); // Save password in plain text
-        await user.save();
-        res.status(200).json({ success: true, message: 'Registration successful' });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Error registering user' });
     }
 });
 
