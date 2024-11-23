@@ -160,6 +160,8 @@ function AddTransactionWithDate() {
             });
 
             if (response.ok) {
+                const result = await response.json();
+                
                 setTransactions(transactions.filter((transaction) => transaction._id !== id));
             } else {
                 console.error(`Failed to delete transaction: ${await response.text()}`);

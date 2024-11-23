@@ -37,6 +37,11 @@ app.delete('/transactions/:id', async (req, res) => {
     const { id } = req.params;
     try {
         await Transaction.findByIdAndDelete(id);
+
+        if(!transaction){
+            return res.status(404).json({error: `Transaciton with id ${id} is not found.`});
+        }
+
         res.status(200).send(`Transaction with id ${id} deleted successfully.`);
     } catch (error) {
         res.status(500).send(`Error deleting transaction: ${error.message}`);
