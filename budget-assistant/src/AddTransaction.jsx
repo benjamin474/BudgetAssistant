@@ -7,6 +7,7 @@ import { calculateTotalsForRange } from './transactionUtils';
 import { useNavigate } from 'react-router-dom';
 import './AddTransaction.css';
 import TransactionCharts from './TransactionCharts'; // 引入圖表組件
+import AddNewKind from './AddNewKind';
 
 function AddTransactionWithDate() {
     const [selectedDate, setSelectedDate] = useState(new Date()); // 預設為今天的日期
@@ -20,8 +21,19 @@ function AddTransactionWithDate() {
     const [filteredTransactions, setFilteredTransactions] = useState([]); // 選擇日期的交易紀錄
     const [queryRange, setQueryRange] = useState('day');
     const [editingTransactions, setEditingTransactions] = useState([]);
+    const [customKinds, setCustomKinds] = useState([]);
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
+
+    const handleKindAdded = (newKind) => {
+        setCustomKinds([...customKinds, newKind]);
+        setKind(newKind.name);
+        setType(newKind.type);
+    };
+
+    const handleKindDeleted = (kindId) => {
+        setCustomKinds(customKinds.filter(kind => kind._id !== kindId));
+    };
 
     // 從後端獲取交易資料
     useEffect(() => {
@@ -240,6 +252,7 @@ function AddTransactionWithDate() {
                     inline
                 />
             </div>
+            <AddNewKind token={token} onKindAdded={handleKindAdded} onKindDeleted={handleKindDeleted} />
             <form onSubmit={handleSubmit}>
                 <label>
                     金額(Amount):
@@ -276,6 +289,13 @@ function AddTransactionWithDate() {
                                 <option value="交通">交通</option>
                                 <option value="娛樂">娛樂</option>
                                 <option value="其他">其他</option>
+                                {customKinds
+                                    .filter(customKind => customKind.type === 'expense') // Filter for expense types
+                                    .map(customKind => (
+                                        <option key={customKind._id} value={customKind.name}>
+                                            {customKind.name}
+                                        </option>
+                                    ))}
                             </>
                         ) : type === 'income' ? (
                             <>
@@ -283,6 +303,13 @@ function AddTransactionWithDate() {
                                 <option value="投資">投資</option>
                                 <option value="副業">副業</option>
                                 <option value="其他">其他</option>
+                                {customKinds
+                                    .filter(customKind => customKind.type === 'income') // Filter for income types
+                                    .map(customKind => (
+                                        <option key={customKind._id} value={customKind.name}>
+                                            {customKind.name}
+                                        </option>
+                                    ))}
                             </>
 
                         ) : (
