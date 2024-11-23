@@ -5,6 +5,7 @@ import Signup from './Signup';
 import AddTransaction from './AddTransaction'; // Import your AddTransaction component
 import ProtectedRoute from './ProtectedRoute'; // Import the ProtectedRoute component
 import ForgotPassword from './ForgotPassword.jsx';
+import Home from './Home.jsx';
 function App() {
   return (
     <div className="App">
@@ -23,10 +24,18 @@ function App() {
             }
           />
           <Route
+            path="/home"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/"
             element={
               <ProtectedRoute>
-                <AddTransaction />
+                <Home />
               </ProtectedRoute>
             }
           />
