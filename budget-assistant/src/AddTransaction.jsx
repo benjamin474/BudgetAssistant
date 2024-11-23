@@ -34,7 +34,7 @@ function AddTransactionWithDate() {
     const handleKindDeleted = (kindId) => {
         setCustomKinds(customKinds.filter(kind => kind._id !== kindId));
     };
-    useEffect(() => {
+    useEffect(() => { //從後端獲取自定義類別
         const fetchCustomKinds = async () => {
             try {
                 const response = await fetch('http://localhost:3001/customized-kinds', {
