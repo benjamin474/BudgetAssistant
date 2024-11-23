@@ -34,6 +34,28 @@ function AddTransactionWithDate() {
     const handleKindDeleted = (kindId) => {
         setCustomKinds(customKinds.filter(kind => kind._id !== kindId));
     };
+    useEffect(() => {
+        const fetchCustomKinds = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/customized-kinds', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch custom kinds');
+                }
+                const data = await response.json();
+                setCustomKinds(data);
+            } catch (error) {
+                console.error('Failed to fetch custom kinds:', error);
+            }
+        };
+
+        fetchCustomKinds();
+    }, [token]);
 
     // 從後端獲取交易資料
     useEffect(() => {
