@@ -95,6 +95,14 @@ function AddNewKind({ token, onKindAdded, onKindDeleted }) {
                 <option value="income">收入 (Income)</option>
             </select>
             <button onClick={handleAddCustomKind}>Add Kind</button>
+            <ul>
+                {customKinds.map(customKind => (
+                    <li key={customKind._id}>
+                        {customKind.name}
+                        <button onClick={() => handleDeleteCustomKind(customKind._id)}>Delete</button>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }
