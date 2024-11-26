@@ -1,4 +1,4 @@
-import jwtDecode from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 
 export const handleSubmit = async (e, formData, setFormData, transactions, setTransactions, token) => {
     e.preventDefault();

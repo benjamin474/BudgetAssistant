@@ -14,6 +14,13 @@ const Signup = () => {
 
     const navigate = useNavigate();
 
+    const handleChange = (e) =>{
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+
     return (
         <div className="signup-page">
             <div className="signup-container">
