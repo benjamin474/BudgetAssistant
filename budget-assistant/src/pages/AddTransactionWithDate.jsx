@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import AddNewTransaction from './AddNewTransaction';
+import AddNewTransaction from '../components/AddNewTransaction';
 import AddNewKind from '../components/AddNewKind';
 import TransactionGrid from '../components/TransactionGrid';
 import { useNavigate } from 'react-router-dom';
