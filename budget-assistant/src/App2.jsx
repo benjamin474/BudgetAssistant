@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './Page/Login';
 import Signup from './Page/Signup';
-import AddTransaction from './Page/TransactionPage';
+import TransactionPage from './Page/TransactionPage';
 import ProtectedRoute from './ProtectedRoute';
 import ForgotPassword from './Page/ForgotPassword';
 
@@ -19,7 +19,7 @@ function App() {
             path="/add-transaction"
             element={
               <ProtectedRoute>
-                <AddTransaction />
+                <TransactionPage />
               </ProtectedRoute>
             }
           />
@@ -27,7 +27,7 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <AddTransaction />
+                <TransactionPage />
               </ProtectedRoute>
             }
           />
