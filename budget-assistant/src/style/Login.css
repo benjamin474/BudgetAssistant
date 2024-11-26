@@ -1,0 +1,195 @@
+/* 統一設置深灰色的頁面背景 */
+html, body {
+    /* background-color: rgb(143, 203, 214); */
+    /* 深灰色背景 */
+    /* 調整文字顏色 */
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin : 0;
+    justify-content: center;
+}
+
+.login-page{
+    background-color: lightgray;
+    height: 80vh;
+    display: flex;
+}
+
+/* Login container */
+.login-container {
+    max-width: 400px;
+    width: 100%;
+    padding: 30px;
+    background-color: gray;
+    /* 較淺的灰色背景 */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* Header styling */
+.login-header {
+    font-size: 1.8rem;
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+/* Social login section */
+.social-login {
+    margin-bottom: 1rem;
+}
+
+.social-login p {
+    margin-bottom: 0.5rem;
+    color: #e0e0e0;
+}
+
+.social-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.social-button {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    font-size: 1rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+.icon-set{
+    width: 10px;
+    height: 10px;
+}
+
+.social-button.facebook {
+    background-image: 'https://i.ibb.co/JQb3D78/facebook-number.png';
+}
+
+.social-button.twitter {
+    background-color: #1da1f2;
+}
+
+.social-button.linkedin {
+    background-color: #0077b5;
+}
+
+.login-image-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* .login-image {
+    max-width: 100%;
+    height: auto;
+} */
+
+
+/* Divider */
+.divider {
+    display: flex;
+    align-items: center;
+    color: #aaa;
+    margin: 1rem 0;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #555;
+    margin: 0 10px;
+}
+
+/* Form styling */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-group {
+    text-align: left;
+}
+
+.form-label {
+    font-size: 0.875rem;
+    color: #ffffff;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #555555;
+    /* 深灰色輸入框背景 */
+    border: 1px solid #777777;
+    border-radius: 4px;
+}
+
+.form-input::placeholder {
+    color: #cccccc;
+}
+
+.login-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    background-color: #c404f9;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: #df66ef;
+}
+
+/* Additional links */
+.additional-links {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: #cccccc;
+}
+
+.forgot-password {
+    color: #1d4ed8;
+    text-decoration: none;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+/* Sign up link */
+.link {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: #cccccc;
+}
+
+.register-link {
+    color: #1d4ed8;
+    text-decoration: none;
+}
+
+.register-link:hover {
+    text-decoration: underline;
+}
