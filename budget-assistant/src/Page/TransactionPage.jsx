@@ -4,13 +4,14 @@ import { handleKindAdded } from '../Transaction/handleKindAdded';
 import { handleKindDeleted } from '../Transaction/handleKindDeleted';
 import { fetchCustomKinds } from '../Transaction/fetchCustomKinds';
 import { fetchTransactions } from '../Transaction/fetchTransactions';
-import { handleSubmit } from '../Transaction/handleSubmit';
 import { handleEditTransaction } from '../Transaction/handleEditTransaction';
 import { handleDeleteTransaction } from '../Transaction/handleDeleteTransaction';
 import { handleLogout } from '../Transaction/handleLogout';
 import { formatDate } from '../Transaction/formatDate';
 import { resetTime } from '../Transaction/resetTime';
 import { handleDownload } from '../Transaction/handleDownload';
+import { handleSubmit } from '../Transaction/handleSubmit';
+import { handleFileChange } from '../Transaction/handleFileChange';
 import AddNewKind from '../Transaction/AddNewKind';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -29,6 +30,7 @@ const TransactionPage = () => {
     const [transactions, setTransactions] = useState([]);
     const [filteredTransactions, setFilteredTransactions] = useState([]);
     const [customKinds, setCustomKinds] = useState([]);
+    const [file, setFile] = useState(null);
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
 
@@ -52,20 +54,13 @@ const TransactionPage = () => {
         }
     }, [startDate, endDate, transactions]);
 
-    const formData = {
-        selectedDate,
-        amount,
-        description,
-        type,
-        kind
-    };
-
+    
     const setFormData = (data) => {
-        setSelectedDate(data.selectedDate || selectedDate);
-        setAmount(data.amount || amount);
-        setDescription(data.description || description);
-        setType(data.type || type);
-        setKind(data.kind || kind);
+        setSelectedDate(data.selectedDate || new Date());
+        setAmount(data.amount || '');
+        setDescription(data.description || '');
+        setKind(data.kind || '其他');
+        setFile(data.file || null);
     };
 
     const { incomeTotal, expenseTotal, netTotal, budgetTotal, remainingBudget } = filteredTransactions.reduce(
@@ -106,7 +101,7 @@ const TransactionPage = () => {
                 />
             </div>
             <AddNewKind token={token} onKindAdded={(newKind) => handleKindAdded(newKind, customKinds, setCustomKinds, setKind, setType)} onKindDeleted={(kindId) => handleKindDeleted(kindId, customKinds, setCustomKinds)} />
-            <form onSubmit={(e) => handleSubmit(e, formData, setFormData, transactions, setTransactions, token)}>
+            <form onSubmit={(e) => handleSubmit(e, selectedDate, amount, description, type, kind, file, setFormData, transactions, setTransactions, token)}>
                 <label>
                     金額(Amount):
                     <input
@@ -168,6 +163,13 @@ const TransactionPage = () => {
                             <option value="預算">預算</option>
                         )}
                     </select>
+                </label>
+                <label>
+                    上傳文件(File):
+                    <input
+                        type="file"
+                        onChange={(e) => handleFileChange(e, setFile)}
+                    />
                 </label>
                 <button type="submit">記帳</button>
             </form>

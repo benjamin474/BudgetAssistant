@@ -1,12 +1,21 @@
 const Transaction = require('../models/TransactionModel');
 
 exports.createTransaction = async (req, res) => {
-    try {
-        const userId = req.userId;
-        console.log('Creating transaction for user:', userId);
-        const transaction = new Transaction({ ...req.body, user: userId });
-        await transaction.save();
-        res.status(201).send(transaction); // 201 Created
+  try {
+    const userId = req.userId;
+    console.log('Creating transaction for user:', userId);
+    const transactionData = {
+      ...req.body,
+      user: userId,
+    };
+
+    if (req.file) {
+      transactionData.file = req.file.buffer; // Store file buffer
+    }
+
+    const transaction = new Transaction(transactionData);
+    await transaction.save();
+    res.status(201).send(transaction); // 201 Created
     } catch (error) {
         res.status(400).send(`Error creating transaction: ${error.message}`); // 400 Bad Request
     }

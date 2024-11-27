@@ -1,12 +1,14 @@
 const express = require('express');
+const multer = require('multer');
 const transactionController = require('../controllers/TransactionController');
 const authMiddleware = require('../middleware/authMiddleware'); // Assume this middleware sets req.userId
 
 const router = express.Router();
+const upload = multer();
 
 router.route('/')
     .get(authMiddleware, transactionController.getUserTransaction)
-    .post(authMiddleware, transactionController.createTransaction);
+    .post(authMiddleware, upload.single('file'), transactionController.createTransaction); // Add upload middleware
 
 router.route('/:id')
     .delete(authMiddleware, transactionController.deleteTransaction);

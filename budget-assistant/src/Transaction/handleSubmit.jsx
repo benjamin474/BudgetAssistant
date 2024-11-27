@@ -1,6 +1,6 @@
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
-export const handleSubmit = async (e, formData, setFormData, transactions, setTransactions, token) => {
+export const handleSubmit = async (e, selectedDate, amount, description, type, kind, file, setFormData, transactions, setTransactions, token) => {
     e.preventDefault();
 
     if (!token) {
@@ -11,23 +11,25 @@ export const handleSubmit = async (e, formData, setFormData, transactions, setTr
     const decodedToken = jwtDecode(token);
     const userId = decodedToken.userId;
 
-    const newTransaction = {
-        user: userId,
-        date: formData.selectedDate.toISOString().split('T')[0],
-        amount: parseFloat(formData.amount),
-        description: formData.description,
-        type: formData.type,
-        kind: formData.kind,
-    };
+    const formDataToSend = new FormData();
+    formDataToSend.append('user', userId);
+    formDataToSend.append('date', selectedDate.toISOString().split('T')[0]);
+    formDataToSend.append('amount', parseFloat(amount));
+    formDataToSend.append('description', description);
+    formDataToSend.append('type', type);
+    formDataToSend.append('kind', kind);
+
+    if (file) {
+        formDataToSend.append('file', file); // Append the file if it exists
+    }
 
     try {
         const response = await fetch('http://localhost:3001/transactions', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(newTransaction),
+            body: formDataToSend,
         });
 
         if (!response.ok) {
@@ -36,7 +38,7 @@ export const handleSubmit = async (e, formData, setFormData, transactions, setTr
 
         const savedTransaction = await response.json();
         setTransactions([...transactions, savedTransaction]);
-        setFormData({ ...formData, amount: '', description: '', kind: '其他' });
+        setFormData({ selectedDate: new Date(), amount: '', description: '', kind: '其他', file: null });
     } catch (error) {
         console.error(`Failed to save transaction: ${error.message}`);
     }
