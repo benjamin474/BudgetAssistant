@@ -59,64 +59,64 @@ const Signup = () => {
 
   return (
     <div className="signup-container">
-      <h2>Create account</h2>
+      <h2>註冊帳號</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="email">電子郵件:</label>
           <input
             type="email"
             id="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder="Enter your email"
+            placeholder="輸入您的電子郵件"
             required
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="username">Username:</label>
+          <label htmlFor="username">用戶名:</label>
           <input
             type="text"
             id="username"
             name="username"
             value={formData.username}
             onChange={handleChange}
-            placeholder="Enter your username"
+            placeholder="輸入您的用戶名"
             required
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="password">Password:</label>
+          <label htmlFor="password">密碼:</label>
           <input
             type="password"
             id="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
-            placeholder="Enter your password"
+            placeholder="輸入您的密碼"
             required
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="password2">Confirm Password:</label>
+          <label htmlFor="password2">確認密碼:</label>
           <input
             type="password"
             id="password2"
             name="password2"
             value={formData.password2}
             onChange={handleChange}
-            placeholder="Enter your password"
+            placeholder="再次輸入您的密碼"
             required
           />
         </div>
         
         <button type="submit" className="login-button">
-          Sign Up
+          註冊
         </button>
-        <button onClick={handleBack} className='login-button'>Back</button>
+        <button onClick={handleBack} className='login-button'>返回</button>
       </form>
     </div>
   );
