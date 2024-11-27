@@ -46,6 +46,12 @@ const Login = () => {
     }
   };
 
+  const handleGoogleLogin = () => {
+    // Redirect to the backend's Google OAuth endpoint
+    window.location.href = 'http://localhost:3001/auth/google';
+  };
+  
+
   return (
     <div className="login-page">
       
@@ -109,6 +115,21 @@ const Login = () => {
             Log In
           </button>
         </form>
+
+
+        <div className="divider">
+          <span>Or</span>
+        </div>
+
+        {/* Google Login Button */}
+        <button className="google-login-button" onClick={handleGoogleLogin}>
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
+            alt="Google Logo"
+            className="google-logo"
+          />
+          Log in with Google
+        </button>
 
         <div className="additional-links">
           <label>

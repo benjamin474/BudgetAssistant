@@ -193,3 +193,29 @@ html, body {
 .register-link:hover {
     text-decoration: underline;
 }
+
+.google-login-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    color: #555;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .google-logo {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+  
+  .google-login-button:hover {
+    background-color: #f7f7f7;
+  }
+  
