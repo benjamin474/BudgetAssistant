@@ -17,6 +17,9 @@ export const verifyOtpAndResetPassword = async (email, otp, newPassword) => {
             alert(`Error: ${errorMessage}`);
         } else {
             alert('Password reset successful');
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 5000);
         }
     } catch (error) {
         console.error('Error resetting password:', error);

@@ -45,6 +45,7 @@ function ForgotPassword() {
                             className="styled-input"
                         />
                         <button onClick={() => verifyOtpAndResetPassword(email, otp, newPassword)} className="styled-button">Reset Password</button>
+                        <button onClick={handleBack} className='login-button'>Back</button>
                     </div>
                 )}
             </div>
