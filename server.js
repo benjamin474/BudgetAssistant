@@ -90,7 +90,7 @@ app.post('/api/verify-otp', async (req, res) => {
             await user.save();
 
             delete otpStore[email];
-            return res.status(200).send('Password reset successful');
+            return res.status(200).send('Password reset successful, you\'ll go back to login page in 5 seconds');
         } catch (err) {
             console.error('Error during password reset:', err);
             return res.status(500).send('Error resetting password');
