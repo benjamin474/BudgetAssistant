@@ -3,14 +3,19 @@ const Transaction = require('../models/TransactionModel');
 exports.createTransaction = async (req, res) => {
   try {
     const userId = req.userId;
-    console.log('Creating transaction for user:', userId);
+    //console.log('Creating transaction for user:', userId);
+    //console.log('Request body:', req.body);
+    //console.log('Uploaded file:', req.file); 
     const transactionData = {
       ...req.body,
       user: userId,
     };
 
     if (req.file) {
-      transactionData.file = req.file.buffer; // Store file buffer
+        transactionData.file = {
+            data: req.file.buffer,
+            contentType: req.file.mimetype
+        };
     }
 
     const transaction = new Transaction(transactionData);

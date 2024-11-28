@@ -1,5 +1,5 @@
 import { jwtDecode } from 'jwt-decode';
-
+import { fetchTransactions } from './fetchTransactions';
 export const handleSubmit = async (e, selectedDate, amount, description, type, kind, file, setFormData, transactions, setTransactions, token) => {
     e.preventDefault();
 
@@ -38,7 +38,8 @@ export const handleSubmit = async (e, selectedDate, amount, description, type, k
 
         const savedTransaction = await response.json();
         setTransactions([...transactions, savedTransaction]);
-        setFormData({ selectedDate: new Date(), amount: '', description: '', kind: '其他', file: null });
+        fetchTransactions(token, setTransactions);
+        setFormData({});
     } catch (error) {
         console.error(`Failed to save transaction: ${error.message}`);
     }

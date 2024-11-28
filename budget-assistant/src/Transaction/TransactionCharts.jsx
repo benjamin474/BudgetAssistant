@@ -23,7 +23,7 @@ const TransactionCharts = ({ transactions = [] }) => {
   const [selectedYearOfBar, setSelectedYearOfBar] = useState(2024);
   const [selectedMonthOfBar, setSelectedMonthOfBar] = useState(9);
   const [flag, setFlag] = useState(false);
-  console.log(selectedMonthOfBar);
+  //console.log(selectedMonthOfBar);
   if (!transactions || transactions.length === 0) {
     return (
       <div className="w-full p-4 text-center text-gray-500">
@@ -83,11 +83,11 @@ const TransactionCharts = ({ transactions = [] }) => {
     }
     const transactionMonth = date.getMonth() + 1;
     const transactionYear = date.getFullYear();
-    console.log(selectedMonthOfBar);
-    console.log(selectedYearOfBar);
-    console.log(transactionMonth);
-    console.log(transactionYear);
-    console.log("           ");
+    //console.log(selectedMonthOfBar);
+    //console.log(selectedYearOfBar);
+    //console.log(transactionMonth);
+    //console.log(transactionYear);
+    //console.log("           ");
     if (selectedMonthOfBar == transactionMonth && selectedYearOfBar == transactionYear) {
 
       if (transaction.type === 'income') {

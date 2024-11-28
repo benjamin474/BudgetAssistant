@@ -7,7 +7,10 @@ const transactionSchema = new mongoose.Schema({
     description: String,
     type: String,
     kind: String,
-    file: Buffer,
+    file: {
+        data: Buffer,
+        contentType: String
+    }
 });
 
 const Transaction = mongoose.model('Transaction', transactionSchema);

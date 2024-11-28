@@ -209,6 +209,11 @@ const TransactionPage = () => {
                                     ：<h1>{transaction.amount} 元</h1>
                                 </div>
                                 <div>{transaction.description || '無描述'}</div>
+                                {transaction.fileUrl && (
+                                    <a href={transaction.fileUrl} target="_blank" rel="noopener noreferrer">
+                                        查看圖片或影片
+                                    </a>
+                                )}
                             </div>
                             <button onClick={() => handleEditTransaction(transaction, setFormData, handleDeleteTransaction, transactions, setTransactions, token)}>編輯</button>
                             <button onClick={() => handleDeleteTransaction(transaction._id, transactions, setTransactions, token)}>刪除</button>

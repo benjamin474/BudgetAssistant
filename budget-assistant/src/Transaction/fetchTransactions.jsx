@@ -11,7 +11,17 @@ export const fetchTransactions = async (token, setEditingTransactions) => {
             throw new Error('Failed to fetch transactions');
         }
         const data = await response.json();
-        setEditingTransactions(data);
+        // Convert binary data to Base64 if it exists
+        const transactionsWithMedia = data.map(transaction => {
+            if (transaction.file && transaction.file.data) {
+                const binary = new Uint8Array(transaction.file.data.data);
+                const blob = new Blob([binary], { type: transaction.file.contentType });
+                transaction.fileUrl = URL.createObjectURL(blob);
+            }
+            return transaction;
+        });
+
+        setEditingTransactions(transactionsWithMedia);
     } catch (error) {
         console.error('Failed to fetch transactions:', error);
     }

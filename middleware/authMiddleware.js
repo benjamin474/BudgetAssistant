@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
         }
         req.user = decodedToken;
         req.userId = decodedToken.userId;
-        console.log('User ID:', req.userId);
+        //console.log('User ID:', req.userId);
         next();
     });
 };
