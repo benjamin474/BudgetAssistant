@@ -14,6 +14,7 @@ const jwt = require('jsonwebtoken');
 const User = require('./models/UserModel'); 
 const TransactionRouter = require('./routes/TransactionRoute');
 const UserRouter = require('./routes/UserRoute');
+const authRouter = require('./routes/auth');
 
 const exportMongoToExcel = require('./exportMongoToExcel');
 const app = express();
@@ -266,6 +267,28 @@ const saveGoogleUser = async (profile) => {
         throw error;
     }
 };
+
+
+const verifyToken = (req, res, next) => {
+    const token = req.headers['authorization']?.split(' ')[1]; // Assuming you send token in `Authorization: Bearer <token>`
+    
+    if (!token) {
+      return res.status(403).json({ message: 'Token required' });
+    }
+  
+    jwt.verify(token, process.env.JWT_TOKEN || 'your_jwt_secret', (err, decoded) => {
+      if (err) {
+        return res.status(403).json({ message: 'Invalid or expired token' });
+      }
+      req.user = decoded; // Attach user data to the request
+      next();
+    });
+  };
+  
+  // Use `verifyToken` middleware on protected routes
+  app.use('/add-transaction', verifyToken, (req, res) => {
+    res.json({ message: 'Welcome to the transaction page!' });
+  });
 
 
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 
@@ -9,6 +9,18 @@ const Login = () => {
   });
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if the token is present in the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    if (token) {
+      // Store the token if found
+      localStorage.setItem('token', token);
+      navigate('/add-transaction'); // Redirect to the dashboard
+    }
+  }, []);
+
 
   const handleChange = (e) => {
     setFormData({
@@ -44,6 +56,8 @@ const Login = () => {
       alert('尚未註冊帳號');
       console.error('Login error:', error);
     }
+
+    
   };
 
   const handleGoogleLogin = () => {
