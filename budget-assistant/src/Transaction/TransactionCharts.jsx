@@ -125,21 +125,31 @@ const TransactionCharts = ({ transactions = [] }) => {
         return date;
     }
   };
-
+  const allKinds = [...new Set(transactions.filter(t => t.type === 'expense').map(t => t.kind || '其他'))];
   // Group transactions by kind and time period for line chart
   const lineData = transactions.reduce((acc, transaction) => {
     if (transaction.type === 'expense') {
       const timePeriodKey = getTimePeriodKey(transaction.date);
-      if (!acc[timePeriodKey]) {
-        acc[timePeriodKey] = {
-          timePeriod: timePeriodKey,
-        };
-      }
+      
       const kind = transaction.kind || '其他';
       if (selectedKind === '全部') {
+        if (!acc[timePeriodKey]) {
+          acc[timePeriodKey] = {
+            timePeriod: timePeriodKey,
+          };
+          allKinds.forEach(kind => {
+            acc[timePeriodKey][kind] = 0;
+          });
+        }
         acc[timePeriodKey][kind] = (acc[timePeriodKey][kind] || 0) + Math.abs(transaction.amount);
       } else {
+        
         if (kind === selectedKind) {
+          if (!acc[timePeriodKey]) {
+            acc[timePeriodKey] = {
+              timePeriod: timePeriodKey,
+            };
+          }
           acc[timePeriodKey][kind] = (acc[timePeriodKey][kind] || 0) + Math.abs(transaction.amount);
         }
       }
@@ -148,7 +158,6 @@ const TransactionCharts = ({ transactions = [] }) => {
   }, {});
 
   const lineChartData = Object.values(lineData);
-  const allKinds = [...new Set(transactions.map(t => t.kind || '其他'))];
 
   return (
     <div className="w-full space-y-8">
@@ -257,7 +266,7 @@ const TransactionCharts = ({ transactions = [] }) => {
 
             )}
           </div>
-          <h3 className="text-lg font-semibold mb-4">{selectedYearOfBar}年{selectedMonthOfBar}月收支圖</h3>
+          <h3 className="text-lg font-semibold mb-4">{selectedYearOfBar}年{selectedMonthOfBar}月收支預算圖</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={barData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -295,18 +304,9 @@ const TransactionCharts = ({ transactions = [] }) => {
             >
               <option value="全部">全部</option>
               <option value="食物">食物</option>
+              <option value="日用品">日用品</option>
               <option value="交通">交通</option>
               <option value="娛樂">娛樂</option>
-              <option value="健康">健康</option>
-              <option value="教育">教育</option>
-              <option value="服飾">服飾</option>
-              <option value="居住">居住</option>
-              <option value="通訊">通訊</option>
-              <option value="水電">水電</option>
-              <option value="保險">保險</option>
-              <option value="投資">投資</option>
-              <option value="人情">人情</option>
-              <option value="旅遊">旅遊</option>
               <option value="其他">其他</option>
             </select>
           </div>
@@ -319,11 +319,11 @@ const TransactionCharts = ({ transactions = [] }) => {
               <Legend />
               {allKinds.map((kind, index) => (
                 <Line
-                  key={kind}
-                  type="linear"
-                  dataKey={kind}
-                  stroke={COLORS[index % COLORS.length]}
-                  name={kind}
+                key={kind}
+                type="linear"
+                dataKey={kind}
+                stroke={COLORS[index % COLORS.length]}
+                name={kind}
                 />
               ))}
             </LineChart>
