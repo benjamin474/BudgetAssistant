@@ -5,6 +5,7 @@ import { handleSetting } from '../Transaction/handleSetting';
 import { handleEmailUpdate } from '../Settings/handleEmailUpdate';
 import { handlePasswordUpdate } from '../Settings/handlePasswordUpdate';
 import { fetchUserInfo } from '../Settings/fetchUserInfo';
+import { handleUsernameUpdate } from '../Settings/handleUsernameUpdate';
 
 const Setting = () => {
     const [newUsername, setNewUsername] = useState('');
@@ -12,6 +13,7 @@ const Setting = () => {
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [userInfo, setUserInfo] = useState({ username: '', email: '' });
+    const [isEditingUsername, setIsEditingUsername] = useState(false);
     const [isEditingEmail, setIsEditingEmail] = useState(false);
     const [isEditingPassword, setIsEditingPassword] = useState(false);
     const navigate = useNavigate();
@@ -25,7 +27,15 @@ const Setting = () => {
         <div className="settings-container">
             <h2>帳戶設定</h2>
             <div className="user-info">
-                <p>目前用戶名稱：{userInfo.username}</p>
+                <p>
+                目前用戶名稱：：{userInfo.username}
+                    <button 
+                        className="edit-btn"
+                        onClick={() => setIsEditingUsername(!isEditingUsername)}
+                    >
+                        {isEditingUsername ? '取消' : '修改'}
+                    </button>
+                </p>
                 <p>
                     目前 Email：{userInfo.email}
                     <button 
@@ -41,11 +51,28 @@ const Setting = () => {
                         className="edit-btn"
                         onClick={() => setIsEditingPassword(!isEditingPassword)}
                     >
-                        {isEditingPassword ? '取消' : '修改密碼'}
+                        {isEditingPassword ? '取消' : '修改'}
                     </button>
                 </p>
             </div>
-
+            {isEditingUsername && (
+                <form onSubmit={(e) => handleUsernameUpdate(e, newUsername, token, setNewUsername)} className="settings-form">
+                    <div className="form-group">
+                        <label htmlFor="username">新的用戶名稱：</label>
+                        <input
+                            type="text"
+                            id="username"
+                            value={newUsername}
+                            onChange={(e) => setNewUsername(e.target.value)}
+                            placeholder="輸入新的用戶名稱"
+                            required
+                        />
+                        <button type="submit" className="submit-btn">
+                            更新用戶名稱
+                        </button>
+                    </div>
+                </form>
+            )}
             {isEditingEmail && (
                 <form onSubmit={(e) => handleEmailUpdate(e, newEmail, token, setUserInfo, setIsEditingEmail)} className="settings-form">
                     <div className="form-group">
