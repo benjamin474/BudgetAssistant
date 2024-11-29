@@ -94,7 +94,20 @@ const TransactionPage = () => {
             padding: '20px',
             boxSizing: 'border-box',
         }}>
-            <button onClick={() => handleLogout(navigate)}>Log out</button>
+            <div className="user-controls">
+                <button 
+                    onClick={() => navigate('/settings')} 
+                    className="settings-btn"
+                >
+                    ⚙️ 設定
+                </button>
+                <button 
+                    onClick={() => handleLogout(navigate)} 
+                    className="logout-btn"
+                >
+                    登出
+                </button>
+            </div>
             <h2>請選擇日期，紀錄您的帳務~</h2>
 
             <div className='date-picker-container'>
