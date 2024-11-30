@@ -32,6 +32,26 @@ const TransactionPage = () => {
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
 
+    // Extract Token from URL Parameters and Redirect
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tokenFromUrl = urlParams.get('token');
+
+        if (tokenFromUrl) {
+            // Save the token to localStorage
+            localStorage.setItem('token', tokenFromUrl);
+
+            // Clean up the URL by removing the token from the query parameters
+            const url = new URL(window.location.href);
+            url.searchParams.delete('token');
+            window.history.replaceState({}, document.title, url.pathname);
+
+            // Redirect to the add-transaction page without the token in the URL
+            navigate('/add-transaction', { replace: true });
+        }
+    }, [navigate]);
+
+    
     useEffect(() => {
         fetchCustomKinds(token, setCustomKinds);
     }, [token]);
