@@ -10,14 +10,13 @@ import { handleLogout } from '../Transaction/handleLogout';
 import { formatDate } from '../Transaction/formatDate';
 import { resetTime } from '../Transaction/resetTime';
 import { handleDownload } from '../Transaction/handleDownload';
-import { handleSubmit } from '../Transaction/handleSubmit';
+import { handleTransactionAdd } from '../Transaction/handleTransactionAdd';
 import { handleFileChange } from '../Transaction/handleFileChange';
 import AddNewKind from '../Transaction/AddNewKind';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../style/AddTransaction.css';
 import TransactionCharts from '../Transaction/TransactionCharts';
-import { jwtDecode } from 'jwt-decode';
 
 const TransactionPage = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -100,8 +99,9 @@ const TransactionPage = () => {
                     inline
                 />
             </div>
+            <button onClick={() => navigate('/add-recurring-transaction')}>新增重複性交易</button>
             <AddNewKind token={token} onKindAdded={(newKind) => handleKindAdded(newKind, customKinds, setCustomKinds, setKind, setType)} onKindDeleted={(kindId) => handleKindDeleted(kindId, customKinds, setCustomKinds)} />
-            <form onSubmit={(e) => handleSubmit(e, selectedDate, amount, description, type, kind, file, setFormData, transactions, setTransactions, token)}>
+            <form onSubmit={(e) => handleTransactionAdd(e, selectedDate, amount, description, type, kind, file, setFormData, transactions, setTransactions, token)}>
                 <label>
                     金額(Amount):
                     <input

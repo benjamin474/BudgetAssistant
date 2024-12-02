@@ -5,7 +5,7 @@ export const handleDeleteTransaction = async (id, transactions, setTransactions,
     }
 
     try {
-        const response = await fetch(`http://localhost:3001/transactions/${id}`, {
+        const response = await fetch(`http://localhost:3001/api/transactions/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

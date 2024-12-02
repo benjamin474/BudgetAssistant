@@ -27,9 +27,9 @@ mongoose.connect(process.env.MONGODB_URI || process.env.DATABASE_URL, {
   .then(() => console.log("Connected to database..."))
   .catch(error => console.error("MongoDB connection error:", error));
 
-app.use('/transactions', TransactionRouter);
-app.use('/users', UserRouter);
-app.use('/customized-kinds', CustomizedKindRouter);
+app.use('/api/transactions', TransactionRouter);
+app.use('/api/users', UserRouter);
+app.use('/api/customized-kinds', CustomizedKindRouter);
 let otpStore = {}; // Temporary OTP storage
 
 // Nodemailer setup

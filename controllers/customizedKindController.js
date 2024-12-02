@@ -3,7 +3,7 @@ const CustomizedKind = require('../models/customizedKindModel');
 exports.createCustomizedKind = async (req, res) => {
     try {
         const userId = req.userId;
-        console.log('Creating customized kind for user:', userId);
+        //console.log('Creating customized kind for user:', userId);
         const customizedKind = new CustomizedKind({ ...req.body, user: userId });
         await customizedKind.save();
         res.status(201).send(customizedKind); // 201 Created

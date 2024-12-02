@@ -1,6 +1,6 @@
 import { jwtDecode } from 'jwt-decode';
 import { fetchTransactions } from './fetchTransactions';
-export const handleSubmit = async (e, selectedDate, amount, description, type, kind, file, setFormData, transactions, setTransactions, token) => {
+export const handleTransactionAdd = async (e, selectedDate, amount, description, type, kind, file, setFormData, transactions, setTransactions, token) => {
     e.preventDefault();
 
     if (!token) {
@@ -24,7 +24,7 @@ export const handleSubmit = async (e, selectedDate, amount, description, type, k
     }
 
     try {
-        const response = await fetch('http://localhost:3001/transactions', {
+        const response = await fetch('http://localhost:3001/api/transactions', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`
