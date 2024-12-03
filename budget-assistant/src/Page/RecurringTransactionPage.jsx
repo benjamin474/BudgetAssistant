@@ -13,8 +13,7 @@ const RecurringTransactionPage = () => {
     const [type, setType] = useState('expense');
     const [transactions, setTransactions] = useState([]);
     const [recurringFrequency, setRecurringFrequency] = useState('monthly');
-    const [recurringDay, setRecurringDay] = useState(1);
-    const [selectedDate, setSelectedDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), recurringDay));
+    const [startDate, setStartDate] = useState(new Date());
     const [customKinds, setCustomKinds] = useState([]);
     const token = localStorage.getItem('token');
 
@@ -23,23 +22,21 @@ const RecurringTransactionPage = () => {
     }, [token]);
 
 
-    //console.log('Updated recurringDay:', recurringDay);
-    //console.log(format(selectedDate, 'yyyy/MM/dd'));
+    //console.log(format(startDate, 'yyyy/MM/dd'));
 
     const setFormData = (data) => {
-        setSelectedDate(data.selectedDate || new Date());
+        setStartDate(data.selectedDate || new Date());
         setAmount(data.amount || '');
         setDescription(data.description || '');
         setKind(data.kind || '其他');
         setRecurringFrequency(data.recurringFrequency || 'monthly');
-        setRecurringDay(data.recurringDay || 10);
     };
     //console.log(format(selectedDate, 'yyyy/MM/dd'));
 
     return (
         <div>
             <h2>新增重複性交易</h2>
-            <form onSubmit={(e) => handleAddRecurringTransaction(e, selectedDate, amount, description, type, kind, setFormData, transactions, setTransactions, endDate, token)}>
+            <form onSubmit={(e) => handleAddRecurringTransaction(e, startDate, amount, description, type, kind, setFormData, transactions, setTransactions, endDate, token)}>
                 <label>
                     金額(Amount):
                     <input
@@ -110,21 +107,13 @@ const RecurringTransactionPage = () => {
                     </select>
                 </label>
                 <label>
-                    重複日(Day):
-                    <input
-                        type="number"
-                        value={recurringDay}
-                        onChange={(e) => {
-                            const newDay = Number(e.target.value);
-                            setRecurringDay(newDay);
-                            setSelectedDate(new Date(new Date().getFullYear(), new Date().getMonth(), newDay));
-                            //console.log(newDay);
-                            //setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), newDay));
-                            //console.log(recurringDay);
-                            //console.log(format(selectedDate, 'yyyy/MM/dd'));
+                    選擇開始日期(Day):
+                    <DatePicker
+                        selected={startDate}
+                        onChange={(date) => {
+                            setStartDate(date);
                         }}
-                        min="1"
-                        max="31"
+                        dateFormat="yyyy/MM/dd"
                     />
                 </label>
                 <label>

@@ -1,10 +1,10 @@
 import { format, addMonths } from 'date-fns';
 import { handleTransactionAdd } from './handleTransactionAdd';
 
-export const handleAddRecurringTransaction = async (e, selectedDate, amount, description, type, kind, setFormData, transactions, setTransactions, endDate, token) => {
+export const handleAddRecurringTransaction = async (e, startDate, amount, description, type, kind, setFormData, transactions, setTransactions, endDate, token) => {
     e.preventDefault();
     
-    let currentDate = new Date(selectedDate);
+    let currentDate = new Date(startDate);
     const end = new Date(endDate);
 
     while (currentDate <= end) {
