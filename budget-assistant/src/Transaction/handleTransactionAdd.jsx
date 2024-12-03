@@ -1,5 +1,6 @@
 import { jwtDecode } from 'jwt-decode';
 import { fetchTransactions } from './fetchTransactions';
+import { format } from 'date-fns';
 export const handleTransactionAdd = async (e, selectedDate, amount, description, type, kind, file, setFormData, transactions, setTransactions, token) => {
     e.preventDefault();
 
@@ -7,13 +8,12 @@ export const handleTransactionAdd = async (e, selectedDate, amount, description,
         console.error('No token found. Please log in.');
         return;
     }
-
     const decodedToken = jwtDecode(token);
     const userId = decodedToken.userId;
-
+    //console.log(format(selectedDate, 'yyyy/MM/dd'));
     const formDataToSend = new FormData();
     formDataToSend.append('user', userId);
-    formDataToSend.append('date', selectedDate.toISOString().split('T')[0]);
+    formDataToSend.append('date', format(selectedDate, 'yyyy/MM/dd'))
     formDataToSend.append('amount', parseFloat(amount));
     formDataToSend.append('description', description);
     formDataToSend.append('type', type);
