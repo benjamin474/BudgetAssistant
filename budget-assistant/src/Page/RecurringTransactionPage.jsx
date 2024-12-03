@@ -29,14 +29,13 @@ const RecurringTransactionPage = () => {
         setAmount(data.amount || '');
         setDescription(data.description || '');
         setKind(data.kind || '其他');
-        setRecurringFrequency(data.recurringFrequency || 'monthly');
     };
     //console.log(format(selectedDate, 'yyyy/MM/dd'));
 
     return (
         <div>
             <h2>新增重複性交易</h2>
-            <form onSubmit={(e) => handleAddRecurringTransaction(e, startDate, amount, description, type, kind, setFormData, transactions, setTransactions, endDate, token)}>
+            <form onSubmit={(e) => handleAddRecurringTransaction(e, startDate, amount, description, type, kind, setFormData, transactions, setTransactions, endDate, token, recurringFrequency)}>
                 <label>
                     金額(Amount):
                     <input
