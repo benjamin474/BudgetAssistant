@@ -7,36 +7,39 @@ import ProtectedRoute from './ProtectedRoute';
 import ForgotPassword from './Page/ForgotPassword';
 import Setting from './Page/Setting';
 
+
 function App() {
   return (
-    <div className="App">
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/sign-up" element={<Signup />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/settings" element={<Setting />} />
-          
-          <Route
-            path="/add-transaction"
-            element={
-              <ProtectedRoute>
-                <TransactionPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <TransactionPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/settings" element={<Setting />} />
-        </Routes>
-      </Router>
-    </div>
+    
+      <div className="App">
+        <Router>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/sign-up" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/settings" element={<Setting />} />
+            
+            <Route
+              path="/add-transaction"
+              element={
+                <ProtectedRoute>
+                  <TransactionPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <TransactionPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/settings" element={<Setting />} />
+          </Routes>
+        </Router>
+      </div>
+    
   );
 }
 

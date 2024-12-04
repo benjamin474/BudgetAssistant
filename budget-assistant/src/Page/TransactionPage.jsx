@@ -17,7 +17,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import '../style/AddTransaction.css';
 import TransactionCharts from '../Transaction/TransactionCharts';
 import { jwtDecode } from 'jwt-decode';
-
+import { getFirstDayOfWeek, getLastDayOfWeek, getFirstDayOfMonth, getLastDayOfMonth, getFirstDayOfYear, getLastDayOfYear } from '../Transaction/handleTransactionChart';
+import { fetchUserName } from '../Transaction/fetchUserName';
 const TransactionPage = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [startDate, setStartDate] = useState(new Date());
@@ -29,17 +30,36 @@ const TransactionPage = () => {
     const [transactions, setTransactions] = useState([]);
     const [filteredTransactions, setFilteredTransactions] = useState([]);
     const [customKinds, setCustomKinds] = useState([]);
+    const [selectedChart, setSelectedChart] = useState('選擇圖表');
+    const [allTransactions, setAllTransactions] = useState([]);
+    const [chartStartDate, setChartStartDate] = useState(new Date());
+    const [quickTimeSelectFlagForLine, setQuickTimeSelectFlagForLine] = useState(false);
+    const [selectedChartForLine, setSelectedChartForLine] = useState('currentWeek');
+    const [userName, setUserName] = useState('');
+
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
 
+    useEffect(() => {
+        fetchUserName(token, setUserName);
+    }, [token]);
     useEffect(() => {
         fetchCustomKinds(token, setCustomKinds);
     }, [token]);
 
     useEffect(() => {
         fetchTransactions(token, setTransactions, navigate);
+        
     }, [token]);
-
+    useEffect(() => {
+       setSelectedChartForLine(selectedChartForLine)
+    }, [selectedChartForLine]);
+    useEffect(() => {
+        setChartStartDate(chartStartDate)
+    }, [chartStartDate]);
+    useEffect(() => {
+        setQuickTimeSelectFlagForLine(quickTimeSelectFlagForLine)
+    }, [quickTimeSelectFlagForLine]);
     useEffect(() => {
         if (Array.isArray(transactions)) {
             const filtered = transactions.filter((transaction) => {
@@ -47,11 +67,32 @@ const TransactionPage = () => {
                 return transactionDate >= resetTime(startDate) && transactionDate <= resetTime(endDate);
             });
             setFilteredTransactions(filtered);
+            const filteredForChart = transactions.filter((transaction) => {
+                const transactionDate = resetTime(new Date(transaction.date));
+                if(selectedChartForLine === "currentWeek"){
+                return transactionDate >= resetTime(getFirstDayOfWeek(chartStartDate)) && transactionDate <= resetTime(getLastDayOfWeek(chartStartDate));
+                }
+                else if(selectedChartForLine === "currentDay"){
+                    return transactionDate >= resetTime(chartStartDate) && transactionDate <= resetTime(chartStartDate);
+                }
+                else if(selectedChartForLine === "currentMonth"){
+                    return transactionDate >= resetTime(getFirstDayOfMonth(chartStartDate)) && transactionDate <= resetTime(getLastDayOfMonth(chartStartDate));
+                }
+                else if(selectedChartForLine === "currentYear"){
+                    return transactionDate >= resetTime(getFirstDayOfYear(chartStartDate)) && transactionDate <= resetTime(getLastDayOfYear(chartStartDate));
+                }
+            });
+            setAllTransactions(filteredForChart.sort((a, b) => {
+                const dateDiff = new Date(a.date) - new Date(b.date);
+                if (dateDiff !== 0) return dateDiff;
+                return b.amount - a.amount;
+            }));
         } else {
             console.error('Transactions is not an array:', transactions);
         }
-    }, [startDate, endDate, transactions]);
+    }, [startDate, endDate, transactions,chartStartDate,selectedChartForLine]);
 
+    
     const formData = {
         selectedDate,
         amount,
@@ -108,7 +149,7 @@ const TransactionPage = () => {
                     登出
                 </button>
             </div>
-            <h2>請選擇日期，紀錄您的帳務~</h2>
+            <h2>您好，{userName}，請選擇日期，紀錄您的帳務~</h2>
 
             <div className='date-picker-container'>
                 <DatePicker
@@ -232,9 +273,45 @@ const TransactionPage = () => {
             <h2>總預算：{budgetTotal}元</h2>
             <h2>淨值：{netTotal}元</h2>
             <h1>預算剩餘：{remainingBudget}元</h1>
+            <select value={selectedChart} onChange={(e) => setSelectedChart(e.target.value)}>
+                <option value="選擇圖表">選擇圖表</option>
+                <option value="收支預算長條圖">收支預算長條圖</option>
+                <option value="收支類別分布">收支類別分布</option>
+                <option value="支出類別趨勢">支出類別趨勢</option>
+            </select>
+
+            {selectedChart !== '選擇圖表' && (<div className="chart-controls" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <input
+                    type="checkbox"
+                    checked={quickTimeSelectFlagForLine}
+                    onChange={() => setQuickTimeSelectFlagForLine(!quickTimeSelectFlagForLine)}
+                    id='sync-checkbox'
+                    style={{ margin: 0 }}
+                />
+                <label htmlFor="sync-checkbox">和查詢範圍同步</label>
+                <select value={selectedChartForLine} onChange={(e) => setSelectedChartForLine(e.target.value)} disabled={quickTimeSelectFlagForLine}>
+                <option value="currentDay">當日</option>
+                <option value="currentWeek">當周</option>
+                <option value="currentMonth">當月</option>
+                <option value="currentYear">當年</option>
+                
+            </select>
+                <DatePicker
+                    selected={chartStartDate}
+                    onChange={(date) => setChartStartDate(date)}
+                    dateFormat="yyyy/MM/dd"
+                    className="p-2 border rounded"
+                    inline
+                />
+            </div>)}
 
             <div className='chart-container'>
-                <TransactionCharts transactions={filteredTransactions} />
+                <TransactionCharts 
+                    transaction={quickTimeSelectFlagForLine ? filteredTransactions : allTransactions} 
+                    selectedChart={selectedChart} 
+                    quickTimeSelectFlagForLine1={quickTimeSelectFlagForLine}
+                    selectedChartForLine1={selectedChartForLine}
+                />
             </div>
             <button onClick={() => handleDownload(token)}>匯出歷史紀錄</button>
         </div>
