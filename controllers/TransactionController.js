@@ -36,6 +36,30 @@ exports.getUserTransaction = async (req, res) => {
     }
 };
 
+exports.getTransactionById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const transaction = await Transaction.findById(id);
+        if (!transaction) {
+            return res.status(404).send('Transaction not found');
+        }
+        res.send(transaction);
+    } catch (error) {
+        res.status(500).send(`Error fetching transaction: ${error.message}`);
+    }
+};
+
+exports.editTransaction = async (req, res) => {
+    const { id } = req.params;
+    const { amount, description, type, kind, date, file } = req.body;
+    try {
+        await Transaction.findByIdAndUpdate(id, { amount, description, type, kind, date, file });
+        res.status(200).send(`Transaction with id ${id} updated successfully.`);
+    } catch (error) {
+        res.status(500).send(`Error updating transaction: ${error.message}`);
+    }
+};
+
 exports.deleteTransaction = async (req, res) => {
     const { id } = req.params;
     try {

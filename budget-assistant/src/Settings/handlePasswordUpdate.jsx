@@ -1,7 +1,7 @@
 export const handlePasswordUpdate = async (e, oldPassword, newPassword, token, navigate, setOldPassword, setNewPassword, setIsEditingPassword) => {
     e.preventDefault();
     try {
-        const response = await fetch('http://localhost:3001/users/password', {
+        const response = await fetch('http://localhost:3001/api/users/password', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

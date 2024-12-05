@@ -4,7 +4,6 @@ import { handleKindAdded } from '../Transaction/handleKindAdded';
 import { handleKindDeleted } from '../Transaction/handleKindDeleted';
 import { fetchCustomKinds } from '../Transaction/fetchCustomKinds';
 import { fetchTransactions } from '../Transaction/fetchTransactions';
-import { handleEditTransaction } from '../Transaction/handleEditTransaction';
 import { handleDeleteTransaction } from '../Transaction/handleDeleteTransaction';
 import { handleLogout } from '../Transaction/handleLogout';
 import { formatDate } from '../Transaction/formatDate';
@@ -24,7 +23,7 @@ const TransactionPage = () => {
     const [endDate, setEndDate] = useState(new Date());
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
-    const [kind, setKind] = useState('');
+    const [kind, setKind] = useState('其他');
     const [type, setType] = useState('expense');
     const [transactions, setTransactions] = useState([]);
     const [filteredTransactions, setFilteredTransactions] = useState([]);
@@ -78,7 +77,8 @@ const TransactionPage = () => {
         setSelectedDate(data.selectedDate || new Date());
         setAmount(data.amount || '');
         setDescription(data.description || '');
-        setKind(data.kind || '其他');
+        setKind(data.kind || '交通');
+        setType(data.type || 'expense');
         setFile(data.file || null);
     };
 
@@ -247,8 +247,9 @@ const TransactionPage = () => {
                                         查看圖片或影片
                                     </a>
                                 )}
-                            </div>
-                            <button onClick={() => handleEditTransaction(transaction, setFormData, handleDeleteTransaction, transactions, setTransactions, token)}>編輯</button>
+                                </div>
+
+                            <button onClick={() => navigate(`/edit-transaction/${transaction._id}`)}>編輯</button>
                             <button onClick={() => handleDeleteTransaction(transaction._id, transactions, setTransactions, token)}>刪除</button>
                         </div>
                     ))}

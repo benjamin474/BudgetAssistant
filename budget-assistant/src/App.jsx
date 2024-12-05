@@ -6,6 +6,7 @@ import TransactionPage from './Page/TransactionPage';
 import ProtectedRoute from './ProtectedRoute';
 import ForgotPassword from './Page/ForgotPassword';
 import RecurringTransactionPage from './Page/RecurringTransactionPage';
+import EditTransactionPage from './Page/EditTransactionPage';
 import Setting from './Page/Setting';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/add-recurring-transaction" element={<RecurringTransactionPage />} />
           <Route path="/settings" element={<Setting />} />
+          <Route path="/edit-transaction/:id" element={<EditTransactionPage />} />
           
           <Route
             path="/add-transaction"

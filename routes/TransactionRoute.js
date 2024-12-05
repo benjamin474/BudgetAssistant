@@ -11,6 +11,8 @@ router.route('/')
     .post(authMiddleware, upload.single('file'), transactionController.createTransaction); // Add upload middleware
 
 router.route('/:id')
+    .get(authMiddleware, transactionController.getTransactionById)
+    .put(authMiddleware, upload.single('file'), transactionController.editTransaction)
     .delete(authMiddleware, transactionController.deleteTransaction);
 
 module.exports = router;
