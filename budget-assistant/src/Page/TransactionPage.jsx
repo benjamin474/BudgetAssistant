@@ -77,7 +77,7 @@ const TransactionPage = () => {
         setSelectedDate(data.selectedDate || new Date());
         setAmount(data.amount || '');
         setDescription(data.description || '');
-        setKind(data.kind || '交通');
+        setKind(data.kind || '其他');
         setType(data.type || 'expense');
         setFile(data.file || null);
     };

@@ -1,12 +1,15 @@
-export const handleEditTransaction = async (id, transaction, token) => {
+export const handleTransactionEdit = async (id, transaction, token) => {
+    const formData = new FormData();
+    for (const key in transaction) {
+        formData.append(key, transaction[key]);
+    }
     try {
         const response = await fetch(`http://localhost:3001/api/transactions/${id}`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(transaction)
+            body: formData
         });
         if (response.ok) {
             alert('交易更新成功！');

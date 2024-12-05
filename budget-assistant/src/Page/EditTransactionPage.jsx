@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { handleEditTransaction } from '../Transaction/handleEditTransaction';
+import { handleTransactionEdit } from '../Transaction/handleTransactionEdit';
 import { format } from 'date-fns';
 import { fetchCustomKinds } from '../Transaction/fetchCustomKinds';
 import { handleFileChange } from '../Transaction/handleFileChange';
@@ -55,7 +55,7 @@ const EditTransactionPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        handleEditTransaction(id, { amount, description, type, kind, date: selectedDate, file }, token)
+        handleTransactionEdit(id, { amount, description, type, kind, date: selectedDate, file }, token)
             .then(() => navigate('/add-transaction'))
             .catch(err => console.error(err));
     };

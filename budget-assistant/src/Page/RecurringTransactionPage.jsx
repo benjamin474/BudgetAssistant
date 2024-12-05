@@ -9,8 +9,9 @@ const RecurringTransactionPage = () => {
     const [endDate, setEndDate] = useState(new Date());
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
-    const [kind, setKind] = useState('');
+    const [kind, setKind] = useState('其他');
     const [type, setType] = useState('expense');
+    const [file, setFile] = useState(null);
     const [transactions, setTransactions] = useState([]);
     const [recurringFrequency, setRecurringFrequency] = useState('monthly');
     const [startDate, setStartDate] = useState(new Date());
@@ -29,13 +30,14 @@ const RecurringTransactionPage = () => {
         setAmount(data.amount || '');
         setDescription(data.description || '');
         setKind(data.kind || '其他');
+        setFile(data.file || null);
     };
     //console.log(format(selectedDate, 'yyyy/MM/dd'));
 
     return (
         <div>
             <h2>新增重複性交易</h2>
-            <form onSubmit={(e) => handleAddRecurringTransaction(e, startDate, amount, description, type, kind, setFormData, transactions, setTransactions, endDate, token, recurringFrequency)}>
+            <form onSubmit={(e) => handleAddRecurringTransaction(e, startDate, amount, description, type, kind, file,setFormData, transactions, setTransactions, endDate, token, recurringFrequency)}>
                 <label>
                     金額(Amount):
                     <input
@@ -98,6 +100,11 @@ const RecurringTransactionPage = () => {
                         )}
                     </select>
                 </label>
+                <label>
+                    上傳圖片(Upload Image):
+                    <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+                </label>
+                <br />
                 <label>
                     重複頻率(Frequency):
                     <select value={recurringFrequency} onChange={(e) => setRecurringFrequency(e.target.value)}>

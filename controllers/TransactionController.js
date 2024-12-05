@@ -51,9 +51,19 @@ exports.getTransactionById = async (req, res) => {
 
 exports.editTransaction = async (req, res) => {
     const { id } = req.params;
-    const { amount, description, type, kind, date, file } = req.body;
+    const { amount, description, type, kind, date } = req.body;
+    let updateData = { amount, description, type, kind, date };
+
+    // Check if a file is uploaded
+    if (req.file) {
+        updateData.file = {
+            data: req.file.buffer,
+            contentType: req.file.mimetype
+        };
+    }
+
     try {
-        await Transaction.findByIdAndUpdate(id, { amount, description, type, kind, date, file });
+        await Transaction.findByIdAndUpdate(id, updateData);
         res.status(200).send(`Transaction with id ${id} updated successfully.`);
     } catch (error) {
         res.status(500).send(`Error updating transaction: ${error.message}`);
