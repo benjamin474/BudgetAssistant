@@ -22,6 +22,7 @@ import { fetchUserName } from '../Transaction/fetchUserName';
 const TransactionPage = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [startDate, setStartDate] = useState(new Date());
+    const [quickSearchCurrentDay, setQuickSearchCurrentDay] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
@@ -33,9 +34,11 @@ const TransactionPage = () => {
     const [selectedChart, setSelectedChart] = useState('選擇圖表');
     const [allTransactions, setAllTransactions] = useState([]);
     const [chartStartDate, setChartStartDate] = useState(new Date());
-    const [quickTimeSelectFlagForLine, setQuickTimeSelectFlagForLine] = useState(false);
+    const [quickTimeSelectFlagForLine, setQuickTimeSelectFlagForLine] = useState(false);//
     const [selectedChartForLine, setSelectedChartForLine] = useState('currentWeek');
+    const [selectedDateForQuickSearch, setSelectedDateForQuickSearch] = useState('currentWeek');
     const [userName, setUserName] = useState('');
+    const [enableQuickSearchFlag, setEnableQuickSearchFlag] = useState(false);//
 
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
@@ -58,15 +61,43 @@ const TransactionPage = () => {
         setChartStartDate(chartStartDate)
     }, [chartStartDate]);
     useEffect(() => {
-        setQuickTimeSelectFlagForLine(quickTimeSelectFlagForLine)
+        setQuickSearchCurrentDay(quickSearchCurrentDay)
+    }, [quickSearchCurrentDay]);
+    useEffect(() => {
+        setQuickTimeSelectFlagForLine(quickTimeSelectFlagForLine)//
     }, [quickTimeSelectFlagForLine]);
     useEffect(() => {
+        setEnableQuickSearchFlag(enableQuickSearchFlag)//
+    }, [enableQuickSearchFlag]);
+
+    useEffect(() => {
         if (Array.isArray(transactions)) {
-            const filtered = transactions.filter((transaction) => {
+            if(enableQuickSearchFlag){
+                const filtered = transactions.filter((transaction) => {
                 const transactionDate = resetTime(new Date(transaction.date));
                 return transactionDate >= resetTime(startDate) && transactionDate <= resetTime(endDate);
-            });
+            })
             setFilteredTransactions(filtered);
+            }else{
+                const filtered = transactions.filter((transaction) => {
+                    const transactionDate = resetTime(new Date(transaction.date));
+                    if(selectedDateForQuickSearch === "currentWeek"){
+                    return transactionDate >= resetTime(getFirstDayOfWeek(quickSearchCurrentDay)) && transactionDate <= resetTime(getLastDayOfWeek(quickSearchCurrentDay));
+                    }
+                    else if(selectedDateForQuickSearch === "currentDay"){
+                        return transactionDate >= resetTime(quickSearchCurrentDay) && transactionDate <= resetTime(quickSearchCurrentDay);
+                    }
+                    else if(selectedDateForQuickSearch === "currentMonth"){
+                        return transactionDate >= resetTime(getFirstDayOfMonth(quickSearchCurrentDay)) && transactionDate <= resetTime(getLastDayOfMonth(quickSearchCurrentDay));
+                    }
+                    else if(selectedDateForQuickSearch === "currentYear"){
+                        return transactionDate >= resetTime(getFirstDayOfYear(quickSearchCurrentDay)) && transactionDate <= resetTime(getLastDayOfYear(quickSearchCurrentDay));
+                    }
+                })
+                setFilteredTransactions(filtered);
+            }
+            
+            
             const filteredForChart = transactions.filter((transaction) => {
                 const transactionDate = resetTime(new Date(transaction.date));
                 if(selectedChartForLine === "currentWeek"){
@@ -82,15 +113,16 @@ const TransactionPage = () => {
                     return transactionDate >= resetTime(getFirstDayOfYear(chartStartDate)) && transactionDate <= resetTime(getLastDayOfYear(chartStartDate));
                 }
             });
+
             setAllTransactions(filteredForChart.sort((a, b) => {
                 const dateDiff = new Date(a.date) - new Date(b.date);
                 if (dateDiff !== 0) return dateDiff;
                 return b.amount - a.amount;
             }));
+
         } else {
             console.error('Transactions is not an array:', transactions);
-        }
-    }, [startDate, endDate, transactions,chartStartDate,selectedChartForLine]);
+        }}, [startDate, endDate, transactions,chartStartDate,selectedChartForLine,quickSearchCurrentDay,selectedDateForQuickSearch,enableQuickSearchFlag]);
 
     
     const formData = {
@@ -225,8 +257,21 @@ const TransactionPage = () => {
                 </label>
                 <button type="submit">記帳</button>
             </form>
+            <div>
+            <input
+                    type="checkbox"
+                    checked={setEnableQuickSearchFlag}
+                    onChange={() => setEnableQuickSearchFlag(!enableQuickSearchFlag)}
+                    //id='quick-search-checkbox'
+                    //style={{ margin: 0 }}
+                />
+                <label>switch</label>
+            </div>
 
-            <h2>查詢範圍</h2>
+            <h2>{(enableQuickSearchFlag) ? '範圍查詢' : '快速查詢'}</h2>
+
+            {(enableQuickSearchFlag) && (
+                <div>
             <DatePicker
                 selected={startDate}
                 onChange={(date) => setStartDate(date)}
@@ -238,6 +283,27 @@ const TransactionPage = () => {
                 onChange={(date) => setEndDate(date)}
                 dateFormat="yyyy/MM/dd"
             />
+            </div>
+            )
+            }
+            {(!enableQuickSearchFlag) && (
+            <div>
+            <DatePicker
+                selected={quickSearchCurrentDay}
+                onChange={(date) => setQuickSearchCurrentDay(date)}
+                dateFormat="yyyy/MM/dd"
+                inline
+            />
+            <select value={selectedDateForQuickSearch} onChange={(e) => setSelectedDateForQuickSearch(e.target.value)} disabled={enableQuickSearchFlag}>
+                <option value="currentDay">當日</option>
+                <option value="currentWeek">當周</option>
+                <option value="currentMonth">當月</option>
+                <option value="currentYear">當年</option>
+                
+            </select>
+            </div>
+            )
+            }
 
             <h3>以下是您從 {formatDate(startDate)} 到 {formatDate(endDate)} 的帳務~</h3>
             <div className="transaction-grid">
