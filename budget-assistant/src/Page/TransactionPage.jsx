@@ -16,8 +16,6 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../style/AddTransaction.css';
 import TransactionCharts from '../Transaction/TransactionCharts';
-import { jwtDecode } from 'jwt-decode';
-import '../style/TransactionPage.css';
 
 const TransactionPage = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -86,19 +84,18 @@ const TransactionPage = () => {
     );
 
     return (
-    <div className="container bg-info">
+    <div className="container main_div">
     <div className="div">
-        <button className="btn btn-danger mb-4 float-end" onClick={() => handleLogout(navigate)}>
+        <button className="btn btn-success mb-4 float-end" onClick={() => handleLogout(navigate)}>
             Log out
         </button>        
     </div>
 
-    <h2 className="mb-4">請選擇日期，紀錄您的帳務~</h2>
-
+    <h2 className="mb-4 text-center">請選擇日期，紀錄您的帳務~</h2>
     <div className="row">
         {/* 左側區塊 */}
         <div className="col-md-6">
-            <div className="date-picker-container mb-4">
+        <div className="date-picker-container mb-4 bg-color d-flex justify-content-center">
                 <DatePicker
                     selected={selectedDate}
                     onChange={(date) => setSelectedDate(date)}
@@ -107,7 +104,7 @@ const TransactionPage = () => {
                 />
             </div>
 
-            <AddNewKind
+            <AddNewKind 
                 token={token}
                 onKindAdded={(newKind) => handleKindAdded(newKind, customKinds, setCustomKinds, setKind, setType)}
                 onKindDeleted={(kindId) => handleKindDeleted(kindId, customKinds, setCustomKinds)}
@@ -121,7 +118,7 @@ const TransactionPage = () => {
                     <label>金額 (Amount):</label>
                     <input
                         type="number"
-                        className="form-control"
+                        className="form-control bg-color"
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
                         required
@@ -130,7 +127,7 @@ const TransactionPage = () => {
 
                 <div className="form-group mb-3">
                     <label>描述 (Description):</label>
-                    <input
+                    <input 
                         type="text"
                         className="form-control"
                         value={description}
