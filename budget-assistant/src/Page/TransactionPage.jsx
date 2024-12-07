@@ -91,7 +91,8 @@ const TransactionPage = () => {
         </button>        
     </div>
 
-    <h2 className="mb-4 text-center">請選擇日期，紀錄您的帳務~</h2>
+    <h2 className="mb-4 text-center u_font">請選擇日期，紀錄您的帳務~</h2>
+    {/* <h2 className="mb-4 text-center">請選擇日期，紀錄您的帳務~</h2> */}
     <div className="row">
         {/* 左側區塊 */}
         <div className="col-md-6">
@@ -114,29 +115,29 @@ const TransactionPage = () => {
                 className="mb-4"
                 onSubmit={(e) => handleSubmit(e, formData, setFormData, transactions, setTransactions, token)}
             >
-                <div className="form-group mb-3">
-                    <label>金額 (Amount):</label>
+                <div className="form-group mb-3 u_font">
+                    <label>金額 (Amount):
                     <input
                         type="number"
                         className="form-control bg-color"
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
                         required
-                    />
+                    /></label>
                 </div>
 
                 <div className="form-group mb-3">
-                    <label>描述 (Description):</label>
+                    <label>描述 (Description):
                     <input 
                         type="text"
                         className="form-control"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
-                    />
+                    /></label>
                 </div>
 
                 <div className="form-group mb-3">
-                    <label>種類 (Type):</label>
+                    <label>種類 (Type):
                     <select
                         className="form-control"
                         value={type}
@@ -145,11 +146,11 @@ const TransactionPage = () => {
                         <option value="expense">支出 (Expense)</option>
                         <option value="income">收入 (Income)</option>
                         <option value="budget">預算 (Budget)</option>
-                    </select>
+                    </select></label>
                 </div>
 
                 <div className="form-group mb-3">
-                    <label>分類 (Kind):</label>
+                    <label>分類 (Kind):
                     <select
                         className="form-control"
                         value={kind}
@@ -188,12 +189,15 @@ const TransactionPage = () => {
                         ) : (
                             <option value="預算">預算</option>
                         )}
-                    </select>
+                    </select></label>
                 </div>
 
                 <button type="submit" className="btn btn-primary w-100">
                     記帳
                 </button>
+                <button className="btn btn-success w-100 mt-3" onClick={() => handleDownload(token)}>
+                匯出歷史紀錄
+            </button>
             </form>
         </div>
 
@@ -278,9 +282,6 @@ const TransactionPage = () => {
             <div className="chart-container mb-4">
                 <TransactionCharts transactions={filteredTransactions} />
             </div>
-            <button className="btn btn-success w-100" onClick={() => handleDownload(token)}>
-                匯出歷史紀錄
-            </button>
         </div>
     </div>
 </div>
