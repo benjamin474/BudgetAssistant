@@ -1,7 +1,8 @@
 html,body{
     margin: 0;
     padding: 0;
-    height: 150vh;
+    height: 125vh;
+    background-color: #93FAE9;
 }
 
 .date-picker-container{

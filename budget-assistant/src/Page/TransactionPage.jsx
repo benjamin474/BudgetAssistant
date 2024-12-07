@@ -17,6 +17,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import '../style/AddTransaction.css';
 import TransactionCharts from '../Transaction/TransactionCharts';
 import { jwtDecode } from 'jwt-decode';
+import '../style/TransactionPage.css';
 
 const TransactionPage = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -85,12 +86,18 @@ const TransactionPage = () => {
     );
 
     return (
-        <div className="container py-4">
-            <button className="btn btn-danger mb-4" onClick={() => handleLogout(navigate)}>
-                Log out
-            </button>
-            <h2 className="mb-4">請選擇日期，紀錄您的帳務~</h2>
+    <div className="container bg-info">
+    <div className="div">
+        <button className="btn btn-danger mb-4 float-end" onClick={() => handleLogout(navigate)}>
+            Log out
+        </button>        
+    </div>
 
+    <h2 className="mb-4">請選擇日期，紀錄您的帳務~</h2>
+
+    <div className="row">
+        {/* 左側區塊 */}
+        <div className="col-md-6">
             <div className="date-picker-container mb-4">
                 <DatePicker
                     selected={selectedDate}
@@ -151,6 +158,7 @@ const TransactionPage = () => {
                         value={kind}
                         onChange={(e) => setKind(e.target.value)}
                     >
+                        {/* 根據不同類型顯示選項 */}
                         {type === 'expense' ? (
                             <>
                                 <option value="食物">食物</option>
@@ -190,7 +198,10 @@ const TransactionPage = () => {
                     記帳
                 </button>
             </form>
+        </div>
 
+        {/* 右側區塊 */}
+        <div className="col-md-6">
             <h2 className="mb-4">查詢範圍</h2>
             <div className="d-flex align-items-center mb-4">
                 <DatePicker
@@ -274,6 +285,9 @@ const TransactionPage = () => {
                 匯出歷史紀錄
             </button>
         </div>
+    </div>
+</div>
+
     );
 };
 
