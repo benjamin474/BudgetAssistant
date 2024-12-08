@@ -16,7 +16,6 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../style/AddTransaction.css';
 import TransactionCharts from '../Transaction/TransactionCharts';
-import { jwtDecode } from 'jwt-decode';
 
 const TransactionPage = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -85,19 +84,18 @@ const TransactionPage = () => {
     );
 
     return (
-        <div style={{
-            height: 'auto',
-            minHeight: '100vh',
-            overflowY: 'auto',
-            display: 'flex',
-            flexDirection: 'column',
-            padding: '20px',
-            boxSizing: 'border-box',
-        }}>
-            <button onClick={() => handleLogout(navigate)}>Log out</button>
-            <h2>請選擇日期，紀錄您的帳務~</h2>
+    <div className="container main_div">
+    <div className="div">
+        <button className="btn btn-success mb-4 float-end" onClick={() => handleLogout(navigate)}>
+            Log out
+        </button>        
+    </div>
 
-            <div className='date-picker-container'>
+    <h2 className="mb-4 text-center">請選擇日期，紀錄您的帳務~</h2>
+    <div className="row">
+        {/* 左側區塊 */}
+        <div className="col-md-6">
+        <div className="date-picker-container mb-4 bg-color d-flex justify-content-center">
                 <DatePicker
                     selected={selectedDate}
                     onChange={(date) => setSelectedDate(date)}
@@ -105,36 +103,59 @@ const TransactionPage = () => {
                     inline
                 />
             </div>
-            <AddNewKind token={token} onKindAdded={(newKind) => handleKindAdded(newKind, customKinds, setCustomKinds, setKind, setType)} onKindDeleted={(kindId) => handleKindDeleted(kindId, customKinds, setCustomKinds)} />
-            <form onSubmit={(e) => handleSubmit(e, formData, setFormData, transactions, setTransactions, token)}>
-                <label>
-                    金額(Amount):
+
+            <AddNewKind 
+                token={token}
+                onKindAdded={(newKind) => handleKindAdded(newKind, customKinds, setCustomKinds, setKind, setType)}
+                onKindDeleted={(kindId) => handleKindDeleted(kindId, customKinds, setCustomKinds)}
+            />
+
+            <form
+                className="mb-4"
+                onSubmit={(e) => handleSubmit(e, formData, setFormData, transactions, setTransactions, token)}
+            >
+                <div className="form-group mb-3">
+                    <label>金額 (Amount):
                     <input
                         type="number"
+                        className="form-control"
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
                         required
-                    />
-                </label>
-                <label>
-                    描述(Description):
-                    <input
+                    /></label>
+                </div>
+
+                <div className="form-group mb-3">
+                    <label>描述 (Description):
+                    <input 
                         type="text"
+                        className="form-control"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
-                    />
-                </label>
-                <label>
-                    種類(Type):
-                    <select value={type} onChange={(e) => setType(e.target.value)}>
-                        <option value="expense">支出(Expense)</option>
-                        <option value="income">收入(Income)</option>
-                        <option value="budget">預算(Budget)</option>
-                    </select>
-                </label>
-                <label>
-                    分類(Kind):
-                    <select value={kind} onChange={(e) => setKind(e.target.value)}>
+                    /></label>
+                </div>
+
+                <div className="form-group mb-3">
+                    <label>種類 (Type):
+                    <select
+                        className="form-control"
+                        value={type}
+                        onChange={(e) => setType(e.target.value)}
+                    >
+                        <option value="expense">支出 (Expense)</option>
+                        <option value="income">收入 (Income)</option>
+                        <option value="budget">預算 (Budget)</option>
+                    </select></label>
+                </div>
+
+                <div className="form-group mb-3">
+                    <label>分類 (Kind):
+                    <select
+                        className="form-control"
+                        value={kind}
+                        onChange={(e) => setKind(e.target.value)}
+                    >
+                        {/* 根據不同類型顯示選項 */}
                         {type === 'expense' ? (
                             <>
                                 <option value="食物">食物</option>
@@ -143,8 +164,8 @@ const TransactionPage = () => {
                                 <option value="娛樂">娛樂</option>
                                 <option value="其他">其他</option>
                                 {customKinds
-                                    .filter(customKind => customKind.type === 'expense')
-                                    .map(customKind => (
+                                    .filter((customKind) => customKind.type === 'expense')
+                                    .map((customKind) => (
                                         <option key={customKind._id} value={customKind.name}>
                                             {customKind.name}
                                         </option>
@@ -157,8 +178,8 @@ const TransactionPage = () => {
                                 <option value="副業">副業</option>
                                 <option value="其他">其他</option>
                                 {customKinds
-                                    .filter(customKind => customKind.type === 'income')
-                                    .map(customKind => (
+                                    .filter((customKind) => customKind.type === 'income')
+                                    .map((customKind) => (
                                         <option key={customKind._id} value={customKind.name}>
                                             {customKind.name}
                                         </option>
@@ -167,64 +188,103 @@ const TransactionPage = () => {
                         ) : (
                             <option value="預算">預算</option>
                         )}
-                    </select>
-                </label>
-                <button type="submit">記帳</button>
+                    </select></label>
+                </div>
+
+                <button type="submit" className="btn btn-primary w-100">
+                    記帳
+                </button>
+                <button className="btn btn-success w-100 mt-3" onClick={() => handleDownload(token)}>
+                匯出歷史紀錄
+            </button>
             </form>
+        </div>
 
-            <h2>查詢範圍</h2>
-            <DatePicker
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                dateFormat="yyyy/MM/dd"
-            />
-            <div>To</div>
-            <DatePicker
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-                dateFormat="yyyy/MM/dd"
-            />
+        {/* 右側區塊 */}
+        <div className="col-md-6">
+            <h2 className="mb-4">查詢範圍</h2>
+            <div className="d-flex align-items-center mb-4">
+                <DatePicker
+                    selected={startDate}
+                    onChange={(date) => setStartDate(date)}
+                    dateFormat="yyyy/MM/dd"
+                    className="form-control me-2"
+                />
+                <span className="mx-2">To</span>
+                <DatePicker
+                    selected={endDate}
+                    onChange={(date) => setEndDate(date)}
+                    dateFormat="yyyy/MM/dd"
+                    className="form-control"
+                />
+            </div>
 
-            <h3>以下是您從 {formatDate(startDate)} 到 {formatDate(endDate)} 的帳務~</h3>
-            <div className="transaction-grid">
+            <h3 className="mb-4">以下是您從 {formatDate(startDate)} 到 {formatDate(endDate)} 的帳務~</h3>
+            <div className="transaction-grid mb-4 bg-color">
                 {filteredTransactions
                     .sort((a, b) => {
                         const dateDiff = new Date(a.date) - new Date(b.date);
-                        if (dateDiff !== 0) return dateDiff;
-                        return b.amount - a.amount;
+                        return dateDiff !== 0 ? dateDiff : b.amount - a.amount;
                     })
                     .map((transaction) => (
-                        <div key={transaction._id} className="transaction-item">
-                            <div className="transaction-kind">{transaction.kind}</div>
-                            <div className="transaction-details">
+                        <div key={transaction._id} className="card mb-3">
+                            <div className="card-header">
+                                {transaction.kind}
+                            </div>
+                            <div className="card-body">
                                 <div>{transaction.date}</div>
                                 <div>
                                     {transaction.type === 'expense'
                                         ? '支出'
                                         : transaction.type === 'income'
-                                            ? '收入'
-                                            : '預算'}{' '}
-                                    ：<h1>{transaction.amount} 元</h1>
+                                        ? '收入'
+                                        : '預算'}{' '}
+                                    ：<strong>{transaction.amount} 元</strong>
                                 </div>
                                 <div>{transaction.description || '無描述'}</div>
+                                <div className="d-flex justify-content-between mt-2">
+                                    <button
+                                        className="btn btn-warning"
+                                        onClick={() =>
+                                            handleEditTransaction(
+                                                transaction,
+                                                setFormData,
+                                                handleDeleteTransaction,
+                                                transactions,
+                                                setTransactions,
+                                                token
+                                            )
+                                        }
+                                    >
+                                        編輯
+                                    </button>
+                                    <button
+                                        className="btn"
+                                        onClick={() =>
+                                            handleDeleteTransaction(transaction._id, transactions, setTransactions, token)
+                                        }
+                                    >
+                                        刪除
+                                    </button>
+                                </div>
                             </div>
-                            <button onClick={() => handleEditTransaction(transaction, setFormData, handleDeleteTransaction, transactions, setTransactions, token)}>編輯</button>
-                            <button onClick={() => handleDeleteTransaction(transaction._id, transactions, setTransactions, token)}>刪除</button>
                         </div>
                     ))}
             </div>
 
-            <h3>您總共賺到：{incomeTotal}元</h3>
-            <h3>您總共花費：{expenseTotal}元</h3>
-            <h2>總預算：{budgetTotal}元</h2>
-            <h2>淨值：{netTotal}元</h2>
-            <h1>預算剩餘：{remainingBudget}元</h1>
+            <h3>您總共賺到：{incomeTotal} 元</h3>
+            <h3>您總共花費：{expenseTotal} 元</h3>
+            <h2>總預算：{budgetTotal} 元</h2>
+            <h2>淨值：{netTotal} 元</h2>
+            <h1 className="text-success">預算剩餘：{remainingBudget} 元</h1>
 
-            <div className='chart-container'>
+            <div className="chart-container mb-4 bg-color">
                 <TransactionCharts transactions={filteredTransactions} />
             </div>
-            <button onClick={() => handleDownload(token)}>匯出歷史紀錄</button>
         </div>
+    </div>
+</div>
+
     );
 };
 

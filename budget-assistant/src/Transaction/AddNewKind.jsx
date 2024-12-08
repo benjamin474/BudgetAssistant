@@ -94,7 +94,7 @@ function AddNewKind({ token, onKindAdded, onKindDeleted }) {
                 <option value="expense">支出 (Expense)</option>
                 <option value="income">收入 (Income)</option>
             </select>
-            <button onClick={handleAddCustomKind}>Add Kind</button>
+            <button className = "btn mx-2 btn-success " style={{ height: '35px' }} onClick={handleAddCustomKind}>Add Kind</button>
             <ul>
                 {customKinds.map(customKind => (
                     <li key={customKind._id}>

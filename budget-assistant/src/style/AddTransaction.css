@@ -1,7 +1,8 @@
-html,body{
+html{
     margin: 0;
     padding: 0;
-    height: 150vh;
+    height: 123vh;
+    /* background-color: #CAFAC7; */
 }
 
 .date-picker-container{
@@ -10,7 +11,7 @@ html,body{
     z-index: 10;
     background-color: white;
     padding: 10px;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     border-radius: 5px;
     box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
 }
@@ -27,6 +28,7 @@ html,body{
     border-radius: 5px;
     box-sizing: border-box;
     background-color: #f9f9f9;
+    overflow-y: auto; /* 垂直方向允許滾動 */
 }
 .chart-container{
     max-height: 600px;
@@ -82,4 +84,12 @@ button:hover{
     box-shadow: 0 4px 8px rgba(230,0,0,0.3);
 }
 
+.main_div
+{
+    background-color: #DBFFF1;
+}
 
+.bg-color, input[type = "text"], input[type = "number"], select
+{
+    background-color: #E8FEFF !important;
+}
