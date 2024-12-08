@@ -91,7 +91,7 @@ const TransactionPage = () => {
         </button>        
     </div>
 
-    <h2 className="mb-4 text-center u_font">請選擇日期，紀錄您的帳務~</h2>
+    <h2 className="mb-4 text-center">請選擇日期，紀錄您的帳務~</h2>
     {/* <h2 className="mb-4 text-center">請選擇日期，紀錄您的帳務~</h2> */}
     <div className="row">
         {/* 左側區塊 */}
@@ -115,7 +115,7 @@ const TransactionPage = () => {
                 className="mb-4"
                 onSubmit={(e) => handleSubmit(e, formData, setFormData, transactions, setTransactions, token)}
             >
-                <div className="form-group mb-3 u_font">
+                <div className="form-group mb-3">
                     <label>金額 (Amount):
                     <input
                         type="number"
