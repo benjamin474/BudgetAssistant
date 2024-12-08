@@ -2,7 +2,7 @@ html{
     margin: 0;
     padding: 0;
     height: 123vh;
-    background-color: #CAFAC7;
+    /* background-color: #CAFAC7; */
 }
 
 .date-picker-container{
@@ -86,15 +86,10 @@ button:hover{
 
 .main_div
 {
-    background-color: #7CFCCC;
+    background-color: #DBFFF1;
 }
 
-.bg-color, input
+.bg-color, input[type = "text"], input[type = "number"], select
 {
-    background-color: #EFF9F2;
-}
-
-html, body 
-{
-    font-family: "DotGothic16", sans-serif;
+    background-color: #E8FEFF !important;
 }

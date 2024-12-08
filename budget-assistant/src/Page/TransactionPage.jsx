@@ -92,7 +92,6 @@ const TransactionPage = () => {
     </div>
 
     <h2 className="mb-4 text-center">請選擇日期，紀錄您的帳務~</h2>
-    {/* <h2 className="mb-4 text-center">請選擇日期，紀錄您的帳務~</h2> */}
     <div className="row">
         {/* 左側區塊 */}
         <div className="col-md-6">
@@ -119,7 +118,7 @@ const TransactionPage = () => {
                     <label>金額 (Amount):
                     <input
                         type="number"
-                        className="form-control bg-color"
+                        className="form-control"
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
                         required
@@ -221,7 +220,7 @@ const TransactionPage = () => {
             </div>
 
             <h3 className="mb-4">以下是您從 {formatDate(startDate)} 到 {formatDate(endDate)} 的帳務~</h3>
-            <div className="transaction-grid mb-4">
+            <div className="transaction-grid mb-4 bg-color">
                 {filteredTransactions
                     .sort((a, b) => {
                         const dateDiff = new Date(a.date) - new Date(b.date);
@@ -260,7 +259,7 @@ const TransactionPage = () => {
                                         編輯
                                     </button>
                                     <button
-                                        className="btn btn-danger"
+                                        className="btn"
                                         onClick={() =>
                                             handleDeleteTransaction(transaction._id, transactions, setTransactions, token)
                                         }
@@ -279,7 +278,7 @@ const TransactionPage = () => {
             <h2>淨值：{netTotal} 元</h2>
             <h1 className="text-success">預算剩餘：{remainingBudget} 元</h1>
 
-            <div className="chart-container mb-4">
+            <div className="chart-container mb-4 bg-color">
                 <TransactionCharts transactions={filteredTransactions} />
             </div>
         </div>
