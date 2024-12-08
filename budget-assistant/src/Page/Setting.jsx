@@ -6,7 +6,6 @@ import { handleEmailUpdate } from '../Settings/handleEmailUpdate';
 import { handlePasswordUpdate } from '../Settings/handlePasswordUpdate';
 import { fetchUserInfo } from '../Settings/fetchUserInfo';
 import { handleUsernameUpdate } from '../Settings/handleUsernameUpdate';
-import { handleGoogleLogin } from '../Login/handleGoogleLogin';
 
 const Setting = () => {
     const [newUsername, setNewUsername] = useState('');
@@ -53,18 +52,6 @@ const Setting = () => {
                         onClick={() => setIsEditingPassword(!isEditingPassword)}
                     >
                         {isEditingPassword ? '取消' : '修改'}
-                    </button>
-                </p>
-
-                <p>
-                    {/* Google Login Button */}
-                    <button className="google-login-button" onClick={handleGoogleLogin}>
-                    <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
-                        alt="Google Logo"
-                        className="google-logo"
-                    />
-                    Bind with Google Account
                     </button>
                 </p>
             </div>
