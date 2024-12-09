@@ -1,9 +1,3 @@
-html,body{
-    margin: 0;
-    padding: 0;
-    height: 150vh;
-}
-
 .date-picker-container{
     display: center;
     top: 0;
