@@ -63,7 +63,7 @@ const Setting = () => {
                         alt="Google Logo"
                         className="google-logo"
                     />
-                    Log in with Google
+                    Bind with your Google Account
                     </button>
                 </p>
             </div>
