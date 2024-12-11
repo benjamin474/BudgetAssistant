@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { handleChange } from '../Login/handleChange';
 import { handleSubmit } from '../Login/handleSubmit';
+import { handleGoogleLogin } from '../Login/handleGoogleLogin';
 import '../style/Login.css';
 
 const Login = () => {
@@ -11,6 +12,17 @@ const Login = () => {
     });
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        // Check if the token is present in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        if (token) {
+          // Store the token if found
+          localStorage.setItem('token', token);
+          navigate('/add-transaction'); // Redirect to the dashboard
+        }
+      }, []);
 
     return (
         <div className="login-page">
@@ -59,6 +71,20 @@ const Login = () => {
                         Log In
                     </button>
                 </form>
+
+                <div className="divider">
+          <span>Or</span>
+        </div>
+
+        {/* Google Login Button */}
+        <button className="google-login-button" onClick={handleGoogleLogin}>
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
+            alt="Google Logo"
+            className="google-logo"
+          />
+          Log in with Google
+        </button>
 
                 <div className="additional-links">
                     <label>
