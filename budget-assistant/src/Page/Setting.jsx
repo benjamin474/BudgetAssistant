@@ -6,6 +6,7 @@ import { handleEmailUpdate } from '../Settings/handleEmailUpdate';
 import { handlePasswordUpdate } from '../Settings/handlePasswordUpdate';
 import { fetchUserInfo } from '../Settings/fetchUserInfo';
 import { handleUsernameUpdate } from '../Settings/handleUsernameUpdate';
+import { handleGoogleLogin } from '../Login/handleGoogleLogin';
 
 const Setting = () => {
     const [newUsername, setNewUsername] = useState('');
