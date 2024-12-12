@@ -107,7 +107,9 @@ const RecurringTransactionPage = () => {
                 <br />
                 <label>
                     重複頻率(Frequency):
-                    <select value={recurringFrequency} onChange={(e) => setRecurringFrequency(e.target.value)}>
+                    <select value={recurringFrequency} onChange={(e) => setRecurringFrequency(e.target.value)}>            
+                        <option value="daily">每日(Daily)</option>
+                        <option value="weekly">每週(Weekly)</option>
                         <option value="monthly">每月(Monthly)</option>
                         <option value="yearly">每年(Yearly)</option>
                     </select>

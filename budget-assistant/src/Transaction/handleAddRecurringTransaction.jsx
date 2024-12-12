@@ -1,4 +1,4 @@
-import { format, addMonths, addYears } from 'date-fns';
+import { format, addDays, addWeeks, addMonths, addYears } from 'date-fns';
 import { handleTransactionAdd } from './handleTransactionAdd';
 
 export const handleAddRecurringTransaction = async (e, startDate, amount, description, type, kind, file, setFormData, transactions, setTransactions, endDate, token, recurringFrequency) => {
@@ -9,7 +9,13 @@ export const handleAddRecurringTransaction = async (e, startDate, amount, descri
 
     while (currentDate <= end) {
         await handleTransactionAdd(e, currentDate, amount, description, type, kind, file, setFormData, transactions, setTransactions, token);
-        if (recurringFrequency === 'monthly') {
+        if(recurringFrequency === 'daily') {
+            currentDate = addDays(currentDate, 1);
+        }
+        else if (recurringFrequency === 'weekly') {
+            currentDate = addWeeks(currentDate, 1);
+        } 
+        else if (recurringFrequency === 'monthly') {
             currentDate = addMonths(currentDate, 1);
         } else if (recurringFrequency === 'yearly') {
             currentDate = addYears(currentDate, 1);

@@ -28,11 +28,19 @@ function App() {
                 </ProtectedRoute>
               }
             />
+             <Route
+              path="/add-recurring-transaction"
+              element={
+                <ProtectedRoute>
+                  <RecurringTransactionPage />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/"
               element={
                 <ProtectedRoute>
-                  <TransactionPage />
+                  <Login />
                 </ProtectedRoute>
               }
             />
