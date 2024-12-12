@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { format} from 'date-fns';
+import { format } from 'date-fns';
 import { handleAddRecurringTransaction } from '../Transaction/handleAddRecurringTransaction'; // Ensure this function is implemented
 import { fetchCustomKinds } from '../Transaction/fetchCustomKinds';
 import DatePicker from 'react-datepicker';
@@ -37,7 +37,7 @@ const RecurringTransactionPage = () => {
     return (
         <div>
             <h2>新增重複性交易</h2>
-            <form onSubmit={(e) => handleAddRecurringTransaction(e, startDate, amount, description, type, kind, file,setFormData, transactions, setTransactions, endDate, token, recurringFrequency)}>
+            <form onSubmit={(e) => handleAddRecurringTransaction(e, startDate, amount, description, type, kind, file, setFormData, transactions, setTransactions, endDate, token, recurringFrequency)}>
                 <label>
                     金額(Amount):
                     <input
@@ -107,7 +107,7 @@ const RecurringTransactionPage = () => {
                 <br />
                 <label>
                     重複頻率(Frequency):
-                    <select value={recurringFrequency} onChange={(e) => setRecurringFrequency(e.target.value)}>            
+                    <select value={recurringFrequency} onChange={(e) => setRecurringFrequency(e.target.value)}>
                         <option value="daily">每日(Daily)</option>
                         <option value="weekly">每週(Weekly)</option>
                         <option value="monthly">每月(Monthly)</option>
@@ -135,6 +135,7 @@ const RecurringTransactionPage = () => {
                     />
                 </label>
                 <button type="submit">新增重複性交易</button>
+
             </form>
         </div>
     );
