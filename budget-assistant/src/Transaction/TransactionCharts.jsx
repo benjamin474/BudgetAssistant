@@ -1,29 +1,38 @@
-import React, { useState } from 'react';
-import MonthPicker from 'react-month-picker-simple';
-
+import React, { useState, useEffect } from 'react';
 import {
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  LineChart,
-  Line,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
+  BarChart, Bar, PieChart, Pie, LineChart, Line,
+  Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   ResponsiveContainer
 } from 'recharts';
+import {
+  processTransactionsByType,
+  createPieData,
+  createLineChartData,
+  createBarData
+} from './handleTransactionChart';
 
-const TransactionCharts = ({ transactions = [] }) => {
-  const [timeRange, setTimeRange] = useState('week'); // 'week', 'month', 'year'
-  const [selectedKind, setSelectedKind] = useState('全部');
+// Chart colors
+const COLORS = [
+  '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8',
+  '#82CA9D', '#FFC658', '#FF6B6B', '#4ECDC4', '#45B7D1',
+  '#96CDEF', '#ADDCB6', '#FFE0B2', '#FFCCBC', '#E1BEE7'
+];
+
+const TransactionCharts = ({ transaction  , selectedChart, quickTimeSelectFlagForLine1,selectedChartForLine1}) => {
+  // Bar chart state
   const [selectedYearOfBar, setSelectedYearOfBar] = useState(2024);
   const [selectedMonthOfBar, setSelectedMonthOfBar] = useState(9);
-  const [flag, setFlag] = useState(false);
-  //console.log(selectedMonthOfBar);
+
+
+  // Line chart state
+  const [timeRange, setTimeRange] = useState('week');
+  const [selectedKind, setSelectedKind] = useState('全部');  
+  const [transactions, setTransactions] = useState(transaction);
+
+useEffect(() => {
+  setTransactions(transaction);
+}, [transaction]);
+
   if (!transactions || transactions.length === 0) {
     return (
       <div className="w-full p-4 text-center text-gray-500">
@@ -31,6 +40,7 @@ const TransactionCharts = ({ transactions = [] }) => {
       </div>
     );
   }
+  
 
   // Colors for charts
   const COLORS = [
@@ -161,112 +171,10 @@ const TransactionCharts = ({ transactions = [] }) => {
 
   return (
     <div className="w-full space-y-8">
-      {/* Bar Chart */}
-
-
-
-
-
-
-
-      {/* Pie Chart */}
-      {IncomePieData.length > 0 && (
+      {selectedChart === '收支預算長條圖' && barData.length > 0 && (
         <div className="p-4 bg-white rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">收入類別分布</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={IncomePieData}
-                cx="50%"
-                cy="50%"
-                labelLine={true}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {IncomePieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip formatter={(value) => `$${value}`} />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-
-
-        </div>
-
-      )}
-
-      {/* Pie Chart */}
-      {ExpensePieData.length > 0 && (
-        <div className="p-4 bg-white rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">支出類別分布</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={ExpensePieData}
-                cx="50%"
-                cy="50%"
-                labelLine={true}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {ExpensePieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip formatter={(value) => `$${value}`} />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-      )}
-
-      {barData.length > -1 && (
-
-
-
-        <div className="p-4 bg-white rounded-lg shadow">
-          {/* 左側: 刪除按鈕 */}
-          <div style={{ flex: 0.2, paddingLeft: '20px' }}>
-            <button onClick={() => setFlag(!flag)}>
-              選擇
-            </button>
-            {flag && (
-              <aside
-                style={{
-                  position: 'relative',
-                  top: '-50px', // 可根據需求調整位置
-                  left: '120px',
-                  backgroundColor: 'white',
-                  border: '1px solid #ccc',
-                  borderRadius: '8px',
-                  padding: '10px',
-                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                  zIndex: 10,
-                  width: '200px' // 調整寬度以適合內容
-                }}
-              >
-                <MonthPicker
-                  handleChange={(date) => {
-                    setSelectedMonthOfBar(date.getMonth() + 1);
-                    setSelectedYearOfBar(date.getFullYear());
-
-
-                  }}
-                />
-                <button onClick={() => setFlag(!flag)} className="mb-4 p-2 bg-red-500 text-black rounded">
-                  X
-                </button>
-              </aside>
-
-            )}
+          <div className="flex items-center mb-4">
           </div>
-          <h3 className="text-lg font-semibold mb-4">{selectedYearOfBar}年{selectedMonthOfBar}月收支預算圖</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={barData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -276,23 +184,80 @@ const TransactionCharts = ({ transactions = [] }) => {
               <Legend />
               <Bar dataKey="income" name="收入" fill="#4CAF50" />
               <Bar dataKey="expense" name="支出" fill="#FF5252" />
-              <Bar dataKey="budget" name="預算" fill="#FF5252" />
+              <Bar dataKey="budget" name="預算" fill="#2196F3" />
             </BarChart>
           </ResponsiveContainer>
-
         </div>
       )}
 
-      {/* Line Chart */}
-      {lineChartData.length > 0 && (
+{selectedChart === '收支類別分布' && (
+  <div style={{ width: '100%' }}>
+    
+    {/* 左側收入圓餅圖 */}
+    <div style={{ width: '48%', display: 'inline-block', marginRight: '2%'  }} className="p-4 bg-white rounded-lg shadow">
+      <h3 className="text-lg font-semibold mb-4">收入類別分布</h3>
+      <ResponsiveContainer width="100%" height={300}>
+        <PieChart>
+          <Pie
+            data={IncomePieData}
+            cx="50%"
+            cy="50%"
+            labelLine={true}
+            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+            outerRadius={100}
+            fill="#8884d8"
+            dataKey="value"
+          >
+            {IncomePieData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
+          <Tooltip formatter={(value) => `$${value}`} />
+          <Legend />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
+
+    {/* 右側支出圓餅圖 */}
+    <div style={{ width: '48%', display: 'inline-block', marginRight: '2%' }}  className="p-4 bg-white rounded-lg shadow">
+      <h3 className="text-lg font-semibold mb-4">支出類別分布</h3>
+      <ResponsiveContainer width="100%" height={300}>
+        <PieChart>
+          <Pie
+            data={ExpensePieData}
+            cx="50%"
+            cy="50%"
+            labelLine={true}
+            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+            outerRadius={100}
+            fill="#8884d8"
+            dataKey="value"
+          >
+            {ExpensePieData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
+          <Tooltip formatter={(value) => `$${value}`} />
+          <Legend />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
+  </div>
+)}
+      
+      {selectedChart === '支出類別趨勢' && (
         <div className="p-4 bg-white rounded-lg shadow">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold">支出類別趨勢</h3>
-            <select
-              value={timeRange}
+          <div className="mb-4">
+            
+          </div>
+          <div className="flex items-center mb-4">
+            <h3 className="text-lg font-semibold flex-grow">支出類別趨勢</h3>
+              <select
+                value={timeRange}
               onChange={(e) => setTimeRange(e.target.value)}
-              className="p-2 border rounded"
-            >
+              className="p-2 border rounded ml-2"
+              disabled={!quickTimeSelectFlagForLine1}
+            > <option value="day">日</option>
               <option value="week">週</option>
               <option value="month">月</option>
               <option value="year">年</option>
@@ -300,17 +265,17 @@ const TransactionCharts = ({ transactions = [] }) => {
             <select
               value={selectedKind}
               onChange={(e) => setSelectedKind(e.target.value)}
-              className="p-2 border rounded"
+              className="p-2 border rounded ml-2"
             >
               <option value="全部">全部</option>
-              <option value="食物">食物</option>
-              <option value="日用品">日用品</option>
-              <option value="交通">交通</option>
-              <option value="娛樂">娛樂</option>
-              <option value="其他">其他</option>
-            </select>
+              {allKinds.map(kind => (
+                <option key={kind} value={kind}>{kind}</option>
+                ))}
+              </select>
+              
           </div>
           <ResponsiveContainer width="100%" height={300}>
+            
             <LineChart data={lineChartData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="timePeriod" />
@@ -319,22 +284,19 @@ const TransactionCharts = ({ transactions = [] }) => {
               <Legend />
               {allKinds.map((kind, index) => (
                 <Line
-                key={kind}
-                type="linear"
-                dataKey={kind}
-                stroke={COLORS[index % COLORS.length]}
-                name={kind}
+                  key={kind}
+                  type="linear"
+                  dataKey={kind}
+                  stroke={COLORS[index % COLORS.length]}
+                  name={kind}
                 />
               ))}
             </LineChart>
           </ResponsiveContainer>
         </div>
       )}
-
     </div>
-
   );
-
-
 };
+
 export default TransactionCharts;
