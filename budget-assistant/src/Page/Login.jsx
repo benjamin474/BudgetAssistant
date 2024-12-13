@@ -87,14 +87,15 @@ const Login = () => {
         </button>
 
                 <div className="additional-links">
-                    <label>
-                        <input type="checkbox" /> Remember me
-                    </label>
+                    <div className='remember-me'>
+                            <input type="checkbox" />
+                            <p>Remember me</p>
+                    </div>
                     <Link to="/forgot-password" className="forgot-password">Forgot password?</Link>
                 </div>
 
                 <div className="link">
-                    Don't have an account? <Link to="/sign-up" className="register-link">Register</Link>
+                    <span>Don't have an account?</span> <Link to="/sign-up" className="register-link">Register</Link>
                 </div>
             </div>
         </div>
