@@ -69,11 +69,6 @@ app.get('/export-excel/:user', async (req, res) => {
     }
 });
 
-
-
-
-
-
 // Express middleware
 app.use(require('express-session')({ secret: 'your-secret', resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
@@ -84,7 +79,7 @@ app.use('/auth', authRouter);
 
 
 
-
+z
 app.get('/', (req, res) => res.send('<a href="/auth/google">Login with Google</a>'));
 
 // Google OAuth2.0 savegoogleuser
