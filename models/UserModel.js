@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
         type: String, // Store Google account ID for Google-authenticated users
         required: false,
     },
-    name: {
+    username: {
         type: String,
         required: false,
     },
