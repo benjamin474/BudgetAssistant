@@ -139,7 +139,7 @@ app.post('/users/login', async (req, res) => {
         }
         const isMatch = await bcrypt.compare(password, user.password);
 
-        if (isMatch) { // Compare plain text password
+        if (isMatch) { // Compare hashed password
             return res.status(200).json({ success: true, message: 'Login successful' });
         } else {
             return res.status(401).json({ success: false, message: 'Invalid password' });
@@ -155,7 +155,7 @@ app.post('/users/register', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
         const isExist = await User.findOne({ email });
-        if (isExist) {
+        if (isExist) { // 檢查帳號是否已被註冊
             return res.status(400).json({ success: false, message: '帳號已被註冊' });
         }
         const user = new User({ email, username, password: hashedPassword }); // Save hashed password
