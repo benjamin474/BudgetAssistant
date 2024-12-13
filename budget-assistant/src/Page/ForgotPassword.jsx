@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { handleBack } from '../ForgotPassword/handleBack';
 import { sendOtp } from '../ForgotPassword/sendOtp';
 import { verifyOtpAndResetPassword } from '../ForgotPassword/verifyOtpAndResetPassword';
 import '../style/ForgotPassword.css';
@@ -26,7 +25,7 @@ function ForgotPassword() {
                             className="styled-input"
                         />
                         <button onClick={() => sendOtp(email, setOtpSent)} className="styled-button">Send OTP</button>
-                        <button onClick={() => handleBack(navigate)} className="styled-button">Back</button>
+                        <button onClick={() => navigate('/login')} className="styled-button">Back</button>
                     </div>
                 ) : (
                     <div className="input-group">
@@ -45,7 +44,7 @@ function ForgotPassword() {
                             className="styled-input"
                         />
                         <button onClick={() => verifyOtpAndResetPassword(email, otp, newPassword)} className="styled-button">Reset Password</button>
-                        <button onClick={handleBack} className='login-button'>Back</button>
+                        <button onClick={() => navigate('/login')} className='login-button'>Back</button>
                     </div>
                 )}
             </div>

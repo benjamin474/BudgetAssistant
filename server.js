@@ -1,5 +1,5 @@
 require('dotenv').config(); // Load environment variables
-console.log(process.env.MONGODB_URI); 
+console.log(process.env.MONGODB_URI);
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -12,7 +12,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const jwt = require('jsonwebtoken');
 
 
-const User = require('./models/UserModel'); 
+const User = require('./models/UserModel');
 const TransactionRouter = require('./routes/TransactionRoute');
 const UserRouter = require('./routes/UserRoute');
 const authRouter = require('./routes/auth');
@@ -26,11 +26,11 @@ app.use(bodyParser.json());
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI || process.env.DATABASE_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
 })
-  .then(() => console.log("Connected to database..."))
-  .catch(error => console.error("MongoDB connection error:", error));
+    .then(() => console.log("Connected to database..."))
+    .catch(error => console.error("MongoDB connection error:", error));
 
 app.use('/api/transactions', TransactionRouter);
 app.use('/api/users', UserRouter);
@@ -109,7 +109,7 @@ app.post('/api/verify-otp', async (req, res) => {
 app.get('/export-excel/:user', async (req, res) => {
     const { user } = req.params;
     console.log(`server : ${user}`);
-    
+
     try {
         const filePath = await exportMongoToExcel(user); // 產生 Excel 檔案的路徑
 
@@ -154,6 +154,10 @@ app.post('/users/register', async (req, res) => {
     const { email, username, password } = req.body;
     try {
         const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+        const isExist = await User.findOne({ email });
+        if (isExist) {
+            return res.status(400).json({ success: false, message: '帳號已被註冊' });
+        }
         const user = new User({ email, username, password: hashedPassword }); // Save hashed password
         await user.save();
         res.status(200).json({ success: true, message: 'Registration successful' });
@@ -195,12 +199,12 @@ passport.use(
                 let user = await User.findOne({ googleId: profile.id });
                 if (!user) {
                     // If not, create a new user
-                    user=await User.findOne({email:profile.emails[0].value});
-                    if(user){
+                    user = await User.findOne({ email: profile.emails[0].value });
+                    if (user) {
                         user.googleId = profile.id;
                         await user.save();
                     }
-                    else{
+                    else {
                         user = await User.create({
                             googleId: profile.id,
                             email: profile.emails[0].value,
@@ -221,7 +225,7 @@ passport.use(
     )
 );
 
-  
+
 
 // Serialize and Deserialize User (Session)
 passport.serializeUser((user, done) => done(null, user));
@@ -234,7 +238,7 @@ app.use(passport.session());
 
 // Routes
 app.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] }) // Request these scopes
+    passport.authenticate('google', { scope: ['profile', 'email'] }) // Request these scopes
 );
 
 app.get(
@@ -251,8 +255,8 @@ app.get(
     }
 );
 
-    
-  
+
+
 
 app.get('/', (req, res) => res.send('<a href="/auth/google">Login with Google</a>'));
 
@@ -283,24 +287,24 @@ const saveGoogleUser = async (profile) => {
 
 const verifyToken = (req, res, next) => {
     const token = req.headers['authorization']?.split(' ')[1]; // Assuming you send token in `Authorization: Bearer <token>`
-    
+
     if (!token) {
-      return res.status(403).json({ message: 'Token required' });
+        return res.status(403).json({ message: 'Token required' });
     }
-  
+
     jwt.verify(token, process.env.JWT_TOKEN || 'your_jwt_secret', (err, decoded) => {
-      if (err) {
-        return res.status(403).json({ message: 'Invalid or expired token' });
-      }
-      req.user = decoded; // Attach user data to the request
-      next();
+        if (err) {
+            return res.status(403).json({ message: 'Invalid or expired token' });
+        }
+        req.user = decoded; // Attach user data to the request
+        next();
     });
-  };
-  
-  // Use `verifyToken` middleware on protected routes
-  app.use('/add-transaction', verifyToken, (req, res) => {
+};
+
+// Use `verifyToken` middleware on protected routes
+app.use('/add-transaction', verifyToken, (req, res) => {
     res.json({ message: 'Welcome to the transaction page!' });
-  });
+});
 
 
 const PORT = process.env.PORT || 3001;
