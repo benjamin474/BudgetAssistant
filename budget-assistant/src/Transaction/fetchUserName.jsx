@@ -1,6 +1,6 @@
 export const fetchUserName = async (token, setUserName) => {
     try {
-        const response = await fetch('http://localhost:3001/users/info', {
+        const response = await fetch('http://localhost:3001/api/users/info', {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
