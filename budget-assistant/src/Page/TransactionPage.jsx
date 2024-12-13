@@ -313,7 +313,9 @@ const TransactionPage = () => {
                 onChange={(date) => setEndDate(date)}
                 dateFormat="yyyy/MM/dd"
             />
+            <h3>以下是您從 {formatDate(startDate)} 到 {formatDate(endDate)} 的帳務~</h3>
             </div>
+            
             )
             }
             {(!enableQuickSearchFlag) && (
@@ -335,7 +337,7 @@ const TransactionPage = () => {
             )
             }
 
-            <h3>以下是您從 {formatDate(startDate)} 到 {formatDate(endDate)} 的帳務~</h3>
+            
             <div className="transaction-grid">
                 {filteredTransactions
                     .sort((a, b) => {
