@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { handleAddRecurringTransaction } from '../Transaction/handleAddRecurringTransaction'; // Ensure this function is implemented
 import { fetchCustomKinds } from '../Transaction/fetchCustomKinds';
+import {Link, useNavigate} from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -16,6 +17,7 @@ const RecurringTransactionPage = () => {
     const [recurringFrequency, setRecurringFrequency] = useState('monthly');
     const [startDate, setStartDate] = useState(new Date());
     const [customKinds, setCustomKinds] = useState([]);
+    const navigate = useNavigate();
     const token = localStorage.getItem('token');
 
     useEffect(() => {
@@ -134,6 +136,8 @@ const RecurringTransactionPage = () => {
                         dateFormat="yyyy/MM/dd"
                     />
                 </label>
+                
+                <button type="button" onClick={() => navigate('/add-transaction')}>返回</button>
                 <button type="submit">新增重複性交易</button>
 
             </form>
