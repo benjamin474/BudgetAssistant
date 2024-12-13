@@ -137,8 +137,9 @@ app.post('/users/login', async (req, res) => {
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
+        const isMatch = await bcrypt.compare(password, user.password);
 
-        if (user.password === password) { // Compare plain text password
+        if (isMatch) { // Compare plain text password
             return res.status(200).json({ success: true, message: 'Login successful' });
         } else {
             return res.status(401).json({ success: false, message: 'Invalid password' });
@@ -152,7 +153,8 @@ app.post('/users/login', async (req, res) => {
 app.post('/users/register', async (req, res) => {
     const { email, username, password } = req.body;
     try {
-        const user = new User({ email, username, password }); // Save password in plain text
+        const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+        const user = new User({ email, username, password: hashedPassword }); // Save hashed password
         await user.save();
         res.status(200).json({ success: true, message: 'Registration successful' });
     } catch (error) {
