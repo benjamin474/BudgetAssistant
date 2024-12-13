@@ -33,7 +33,7 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <TransactionPage />
+                <Login />
               </ProtectedRoute>
             }
           />

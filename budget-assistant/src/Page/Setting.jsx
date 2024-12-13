@@ -58,12 +58,12 @@ const Setting = () => {
                 <p>
                        {/* Google Login Button */}
                        <button className="google-login-button" onClick={handleGoogleLogin}>
-                    <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
+                    {/* <img
+                        src="https://i.ibb.co/xGhwbSC/360-F-518093233-b-Ylgthr8-ZLy-AUQ3-Wry-FSSSn3ru-FJLZHM.jpg"
                         alt="Google Logo"
                         className="google-logo"
-                    />
-                    Bind with your Google Account
+                    /> */}
+                    綁定Google帳號
                     </button>
                 </p>
             </div>

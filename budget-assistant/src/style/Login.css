@@ -21,6 +21,12 @@
     gap: 15px;
 }
 
+.google-login-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
 .login-header {
     font-size: 1.7rem;
     color: #ffffff;

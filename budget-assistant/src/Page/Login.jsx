@@ -18,11 +18,11 @@ const Login = () => {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get('token');
         if (token) {
-          // Store the token if found
-          localStorage.setItem('token', token);
-          navigate('/add-transaction'); // Redirect to the dashboard
+            // Store the token if found
+            localStorage.setItem('token', token);
+            navigate('/add-transaction'); // Redirect to the dashboard
         }
-      }, []);
+    }, []);
 
     return (
         <div className="login-page">
@@ -73,23 +73,26 @@ const Login = () => {
                 </form>
 
                 <div className="divider">
-          <span>Or</span>
-        </div>
+                    <span>Or</span>
+                </div>
 
-        {/* Google Login Button */}
-        <button className="google-login-button" onClick={handleGoogleLogin}>
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
-            alt="Google Logo"
-            className="google-logo"
-          />
-          Log in with Google
-        </button>
+                {/* Google Login Button */}
+                <div className="google-login-container">
+                    <button className="google-login-button" onClick={handleGoogleLogin}>
+                        {/* <img
+                            src="https://i.ibb.co/xGhwbSC/360-F-518093233-b-Ylgthr8-ZLy-AUQ3-Wry-FSSSn3ru-FJLZHM.jpg"
+                            alt="Google Logo"
+                            className="google-logo"
+                            width={20}
+                        /> */}
+                        Login with Google
+                    </button>
+                </div>
 
                 <div className="additional-links">
                     <div className='remember-me'>
-                            <input type="checkbox" />
-                            <p>Remember me</p>
+                        <input type="checkbox" />
+                        <p>Remember me</p>
                     </div>
                     <Link to="/forgot-password" className="forgot-password">Forgot password?</Link>
                 </div>
