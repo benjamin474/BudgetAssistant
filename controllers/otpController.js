@@ -1,5 +1,5 @@
 const User = require('../models/UserModel');
-const sendOtpEmail = require('../config/nodemailer'); // Import the transporter
+const transporter = require('../config/nodemailer'); // Import the transporter
 const bcrypt = require('bcryptjs');
 
 let otpStore = {}; // Temporary OTP storage

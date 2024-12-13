@@ -10,7 +10,7 @@ const bcrypt = require('bcryptjs');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const jwt = require('jsonwebtoken');
 
-const sendOtpEmail = require('./config/nodemailer');
+const transporter = require('./config/nodemailer');
 const User = require('./models/UserModel');
 const TransactionRouter = require('./routes/TransactionRoute');
 const UserRouter = require('./routes/UserRoute');
@@ -36,7 +36,7 @@ mongoose.connect(process.env.MONGODB_URI || process.env.DATABASE_URL, {
 app.use('/api/transactions', TransactionRouter);
 app.use('/api/users', UserRouter);
 app.use('/api/customized-kinds', CustomizedKindRouter);
-app.use('/api/otp', otpRoutes); // Add OTP routes
+app.use('/api', otpRoutes); // Add OTP routes
 
 
 

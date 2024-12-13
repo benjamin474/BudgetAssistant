@@ -1,24 +1,11 @@
 const nodemailer = require('nodemailer');
 
-// Set up email transporter
 const transporter = nodemailer.createTransport({
-    service: 'gmail',  // Change this to your email service provider
+    service: 'gmail',  // or another email service like SendGrid
     auth: {
-        user: process.env.EMAIL_USER,  // Your email address
-        pass: process.env.EMAIL_PASS,  // Your email password
+        user: process.env.EMAIL_USER,  // your email address
+        pass: process.env.EMAIL_PASS,  // your email password
     },
 });
 
-// Function to send OTP email
-const sendOtpEmail = (to, otp) => {
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to,
-        subject: 'Your OTP Code',
-        text: `Your OTP code is: ${otp}`,
-    };
-
-    return transporter.sendMail(mailOptions);
-};
-
-module.exports = { sendOtpEmail };
+module.exports = transporter;
