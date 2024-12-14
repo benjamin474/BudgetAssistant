@@ -180,32 +180,25 @@ const TransactionPage = () => {
     );
 
     return (
-        <div style={{
-            height: 'auto',
-            minHeight: '100vh',
-            overflowY: 'auto',
-            display: 'flex',
-            flexDirection: 'column',
-            padding: '20px',
-            boxSizing: 'border-box',
-        }}>
-            <div className="user-controls">
+        <div className="container py-4 bg-info">
+            <div className="d-flex justify-content-between align-items-center mb-4">
                 <button 
                     onClick={() => navigate('/settings')} 
-                    className="settings-btn"
+                    className="btn btn-secondary me-2"
                 >
                     ⚙️ 設定
                 </button>
                 <button 
                     onClick={() => handleLogout(navigate)} 
-                    className="logout-btn"
+                    className="btn btn-danger"
                 >
                     登出
                 </button>
             </div>
-            <h2>您好，{userName || '使用者'}，請選擇日期，紀錄您的帳務~</h2>
-
-            <div className='date-picker-container'>
+    
+            <h2 className="mb-4">您好，{userName || '使用者'}，請選擇日期，紀錄您的帳務~</h2>
+    
+            <div className="mb-4">
                 <DatePicker
                     selected={selectedDate}
                     onChange={(date) => setSelectedDate(date)}
@@ -213,203 +206,220 @@ const TransactionPage = () => {
                     inline
                 />
             </div>
-            <button onClick={() => navigate('/add-recurring-transaction')}>新增重複性交易</button>
-            <AddNewKind token={token} onKindAdded={(newKind) => handleKindAdded(newKind, customKinds, setCustomKinds, setKind, setType)} onKindDeleted={(kindId) => handleKindDeleted(kindId, customKinds, setCustomKinds)} />
-            <form onSubmit={(e) => handleTransactionAdd(e, selectedDate, amount, description, type, kind, file, setFormData, transactions, setTransactions, token)}>
-                <label>
-                    金額(Amount):
+    
+            <button 
+                onClick={() => navigate('/add-recurring-transaction')} 
+                className="btn btn-primary mb-4"
+            >
+                新增重複性交易
+            </button>
+    
+            <AddNewKind 
+                token={token} 
+                onKindAdded={(newKind) => handleKindAdded(newKind, customKinds, setCustomKinds, setKind, setType)} 
+                onKindDeleted={(kindId) => handleKindDeleted(kindId, customKinds, setCustomKinds)} 
+            />
+    
+            <form className="row g-3" onSubmit={(e) => handleTransactionAdd(e, selectedDate, amount, description, type, kind, file, setFormData, transactions, setTransactions, token)}>
+                <div className="col-md-6">
+                    <label className="form-label">金額(Amount):</label>
                     <input
                         type="number"
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
                         required
+                        className="form-control"
                     />
-                </label>
-                <label>
-                    描述(Description):
+                </div>
+                <div className="col-md-6">
+                    <label className="form-label">描述(Description):</label>
                     <input
                         type="text"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
+                        className="form-control"
                     />
-                </label>
-                <label>
-                    種類(Type):
-                    <select value={type} onChange={(e) => setType(e.target.value)}>
+                </div>
+                <div className="col-md-6">
+                    <label className="form-label">種類(Type):</label>
+                    <select value={type} onChange={(e) => setType(e.target.value)} className="form-select">
                         <option value="expense">支出(Expense)</option>
                         <option value="income">收入(Income)</option>
                         <option value="budget">預算(Budget)</option>
                     </select>
-                </label>
-                <label>
-                    分類(Kind):
-                    <select value={kind} onChange={(e) => setKind(e.target.value)}>
-                        {type === 'expense' ? (
+                </div>
+                <div className="col-md-6">
+                    <label className="form-label">分類(Kind):</label>
+                    <select value={kind} onChange={(e) => setKind(e.target.value)} className="form-select">
+                        {type === 'expense' && (
                             <>
                                 <option value="食物">食物</option>
                                 <option value="日用品">日用品</option>
                                 <option value="交通">交通</option>
                                 <option value="娛樂">娛樂</option>
                                 <option value="其他">其他</option>
-                                {customKinds
-                                    .filter(customKind => customKind.type === 'expense')
-                                    .map(customKind => (
-                                        <option key={customKind._id} value={customKind.name}>
-                                            {customKind.name}
-                                        </option>
-                                    ))}
+                                {customKinds.filter(customKind => customKind.type === 'expense').map(customKind => (
+                                    <option key={customKind._id} value={customKind.name}>
+                                        {customKind.name}
+                                    </option>
+                                ))}
                             </>
-                        ) : type === 'income' ? (
+                        )}
+                        {type === 'income' && (
                             <>
                                 <option value="薪資">薪資</option>
                                 <option value="投資">投資</option>
                                 <option value="副業">副業</option>
                                 <option value="其他">其他</option>
-                                {customKinds
-                                    .filter(customKind => customKind.type === 'income')
-                                    .map(customKind => (
-                                        <option key={customKind._id} value={customKind.name}>
-                                            {customKind.name}
-                                        </option>
-                                    ))}
+                                {customKinds.filter(customKind => customKind.type === 'income').map(customKind => (
+                                    <option key={customKind._id} value={customKind.name}>
+                                        {customKind.name}
+                                    </option>
+                                ))}
                             </>
-                        ) : (
+                        )}
+                        {type === 'budget' && (
                             <option value="預算">預算</option>
                         )}
                     </select>
-                </label>
-                <label>
-                    上傳文件(File):
+                </div>
+                <div className="col-md-6">
+                    <label className="form-label">上傳文件(File):</label>
                     <input
                         type="file"
                         onChange={(e) => handleFileChange(e, setFile)}
+                        className="form-control"
                     />
-                </label>
-                <button type="submit">記帳</button>
+                </div>
+                <div className="col-12">
+                    <button type="submit" className="btn btn-success w-100">記帳</button>
+                </div>
             </form>
-            <div>
-            <input
+    
+            <div className="form-check form-switch mt-4">
+                <input
                     type="checkbox"
-                    checked={setEnableQuickSearchFlag}
+                    className="form-check-input"
+                    checked={enableQuickSearchFlag}
                     onChange={() => setEnableQuickSearchFlag(!enableQuickSearchFlag)}
-                    //id='quick-search-checkbox'
-                    //style={{ margin: 0 }}
+                    id="quick-search-checkbox"
                 />
-                <label>switch</label>
+                <label className="form-check-label" htmlFor="quick-search-checkbox">
+                    {enableQuickSearchFlag ? '範圍查詢' : '快速查詢'}
+                </label>
             </div>
-
-            <h2>{(enableQuickSearchFlag) ? '範圍查詢' : '快速查詢'}</h2>
-
-            {(enableQuickSearchFlag) && (
-                <div>
-            <DatePicker
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                dateFormat="yyyy/MM/dd"
-            />
-            <div>To</div>
-            <DatePicker
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-                dateFormat="yyyy/MM/dd"
-            />
-            <h3>以下是您從 {formatDate(startDate)} 到 {formatDate(endDate)} 的帳務~</h3>
-            </div>
-            
-            )
-            }
-            {(!enableQuickSearchFlag) && (
-            <div>
-            <DatePicker
-                selected={quickSearchCurrentDay}
-                onChange={(date) => setQuickSearchCurrentDay(date)}
-                dateFormat="yyyy/MM/dd"
-                inline
-            />
-            <select value={selectedDateForQuickSearch} onChange={(e) => setSelectedDateForQuickSearch(e.target.value)} disabled={enableQuickSearchFlag}>
-                <option value="currentDay">當日</option>
-                <option value="currentWeek">當周</option>
-                <option value="currentMonth">當月</option>
-                <option value="currentYear">當年</option>
-                
-            </select>
-            </div>
-            )
-            }
-
-            
-            <div className="transaction-grid">
-                {filteredTransactions
-                    .sort((a, b) => {
-                        const dateDiff = new Date(a.date) - new Date(b.date);
-                        if (dateDiff !== 0) return dateDiff;
-                        return b.amount - a.amount;
-                    })
-                    .map((transaction) => (
-                        <div key={transaction._id} className="transaction-item">
-                            <div className="transaction-kind">{transaction.kind}</div>
-                            <div className="transaction-details">
-                                <div>{transaction.date}</div>
-                                <div>
-                                    {transaction.type === 'expense'
-                                        ? '支出'
-                                        : transaction.type === 'income'
-                                            ? '收入'
-                                            : '預算'}{' '}
-                                    ：<h1>{transaction.amount} 元</h1>
-                                </div>
-                                <div>{transaction.description || '無描述'}</div>
-                                {transaction.fileUrl && (
-                                    <a href={transaction.fileUrl} target="_blank" rel="noopener noreferrer">
-                                        查看圖片或影片
-                                    </a>
-                                )}
-                                </div>
-
-                            <button onClick={() => navigate(`/edit-transaction/${transaction._id}`)}>編輯</button>
-                            <button onClick={() => handleDeleteTransaction(transaction._id, transactions, setTransactions, token)}>刪除</button>
+    
+            {enableQuickSearchFlag && (
+                <div className="row align-items-center mt-3">
+                    <div className="col">
+                        <DatePicker
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            dateFormat="yyyy/MM/dd"
+                            className="form-control"
+                        />
+                    </div>
+                    <div className="col text-center">To</div>
+                    <div className="col">
+                        <DatePicker
+                            selected={endDate}
+                            onChange={(date) => setEndDate(date)}
+                            dateFormat="yyyy/MM/dd"
+                            className="form-control"
+                        />
+                    </div>
+                    <h3 className="mt-3">以下是您從 {formatDate(startDate)} 到 {formatDate(endDate)} 的帳務~</h3>
+                </div>
+            )}
+    
+            {!enableQuickSearchFlag && (
+                <div className="mt-3">
+                    <DatePicker
+                        selected={quickSearchCurrentDay}
+                        onChange={(date) => setQuickSearchCurrentDay(date)}
+                        dateFormat="yyyy/MM/dd"
+                        inline
+                    />
+                    <select value={selectedDateForQuickSearch} onChange={(e) => setSelectedDateForQuickSearch(e.target.value)} className="form-select mt-3">
+                        <option value="currentDay">當日</option>
+                        <option value="currentWeek">當周</option>
+                        <option value="currentMonth">當月</option>
+                        <option value="currentYear">當年</option>
+                    </select>
+                </div>
+            )}
+    
+            <div className="transaction-grid mt-4">
+                {filteredTransactions.sort((a, b) => new Date(a.date) - new Date(b.date)).map(transaction => (
+                    <div key={transaction._id} className="border rounded p-3 mb-3">
+                        <div><strong>{transaction.kind}</strong></div>
+                        <div>{transaction.date}</div>
+                        <div>
+                            {transaction.type === 'expense' ? '支出' : transaction.type === 'income' ? '收入' : '預算'}: {transaction.amount} 元
                         </div>
-                    ))}
+                        <div>{transaction.description || '無描述'}</div>
+                        {transaction.fileUrl && (
+                            <a href={transaction.fileUrl} target="_blank" rel="noopener noreferrer">
+                                查看圖片或影片
+                            </a>
+                        )}
+                        <div className="d-flex mt-3">
+                            <button onClick={() => navigate(`/edit-transaction/${transaction._id}`)} className="btn btn-outline-primary me-2">
+                                編輯
+                            </button>
+                            <button onClick={() => handleDeleteTransaction(transaction._id, transactions, setTransactions, token)} className="btn btn-outline-danger">
+                                刪除
+                            </button>
+                        </div>
+                    </div>
+                ))}
             </div>
-
-            <h3>您總共賺到：{incomeTotal}元</h3>
+    
+            <h3 className="mt-4">您總共賺到：{incomeTotal}元</h3>
             <h3>您總共花費：{expenseTotal}元</h3>
             <h2>總預算：{budgetTotal}元</h2>
             <h2>淨值：{netTotal}元</h2>
             <h1>預算剩餘：{remainingBudget}元</h1>
-            <select value={selectedChart} onChange={(e) => setSelectedChart(e.target.value)}>
-                <option value="選擇圖表">選擇圖表</option>
-                <option value="收支預算長條圖">收支預算長條圖</option>
-                <option value="收支類別分布">收支類別分布</option>
-                <option value="支出類別趨勢">支出類別趨勢</option>
-            </select>
-
-            {selectedChart !== '選擇圖表' && (<div className="chart-controls" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <input
-                    type="checkbox"
-                    checked={quickTimeSelectFlagForLine}
-                    onChange={() => setQuickTimeSelectFlagForLine(!quickTimeSelectFlagForLine)}
-                    id='sync-checkbox'
-                    style={{ margin: 0 }}
-                />
-                <label htmlFor="sync-checkbox">和查詢範圍同步</label>
-                <select value={selectedChartForLine} onChange={(e) => setSelectedChartForLine(e.target.value)} disabled={quickTimeSelectFlagForLine}>
-                <option value="currentDay">當日</option>
-                <option value="currentWeek">當周</option>
-                <option value="currentMonth">當月</option>
-                <option value="currentYear">當年</option>
-                
-            </select>
-                <DatePicker
-                    selected={chartStartDate}
-                    onChange={(date) => setChartStartDate(date)}
-                    dateFormat="yyyy/MM/dd"
-                    className="p-2 border rounded"
-                    inline
-                />
-            </div>)}
-
-            <div className='chart-container'>
+    
+            <div className="mt-4">
+                <select value={selectedChart} onChange={(e) => setSelectedChart(e.target.value)} className="form-select mb-3">
+                    <option value="選擇圖表">選擇圖表</option>
+                    <option value="收支預算長條圖">收支預算長條圖</option>
+                    <option value="收支類別分布">收支類別分布</option>
+                    <option value="支出類別趨勢">支出類別趨勢</option>
+                </select>
+    
+                {selectedChart !== '選擇圖表' && (
+                    <div className="d-flex align-items-center">
+                        <div className="form-check me-3">
+                            <input
+                                type="checkbox"
+                                className="form-check-input"
+                                checked={quickTimeSelectFlagForLine}
+                                onChange={() => setQuickTimeSelectFlagForLine(!quickTimeSelectFlagForLine)}
+                                id="sync-checkbox"
+                            />
+                            <label className="form-check-label" htmlFor="sync-checkbox">
+                                和查詢範圍同步
+                            </label>
+                        </div>
+                        <select value={selectedChartForLine} onChange={(e) => setSelectedChartForLine(e.target.value)} className="form-select" disabled={quickTimeSelectFlagForLine}>
+                            <option value="currentDay">當日</option>
+                            <option value="currentWeek">當周</option>
+                            <option value="currentMonth">當月</option>
+                            <option value="currentYear">當年</option>
+                        </select>
+                        <DatePicker
+                            selected={chartStartDate}
+                            onChange={(date) => setChartStartDate(date)}
+                            dateFormat="yyyy/MM/dd"
+                            className="form-control ms-3"
+                        />
+                    </div>
+                )}
+            </div>
+    
+            <div className="mt-4">
                 <TransactionCharts 
                     transaction={quickTimeSelectFlagForLine ? filteredTransactions : allTransactions} 
                     selectedChart={selectedChart} 
@@ -417,9 +427,10 @@ const TransactionPage = () => {
                     selectedChartForLine1={selectedChartForLine}
                 />
             </div>
-            <button onClick={() => handleDownload(token)}>匯出歷史紀錄</button>
+    
+            <button onClick={() => handleDownload(token)} className="btn btn-warning mt-4">匯出歷史紀錄</button>
         </div>
-    );
+    );    
 };
 
 export default TransactionPage;
