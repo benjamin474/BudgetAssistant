@@ -180,39 +180,64 @@ const TransactionPage = () => {
     );
 
     return (
-        <div className="container py-4 bg-info">
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <button 
-                    onClick={() => navigate('/settings')} 
-                    className="btn btn-secondary me-2"
-                >
-                    ⚙️ 設定
-                </button>
-                <button 
-                    onClick={() => handleLogout(navigate)} 
-                    className="btn btn-danger"
-                >
-                    登出
-                </button>
+        <div className="container py-4 main-container" style={{ paddingTop: '100px' }}>
+        {/* 頁面頂端 */}
+        <div className="fixed-top">
+          <div
+            className="d-flex justify-content-between align-items-center p-3 rounded"
+            style={{ backgroundColor: "#DEDED2" }} // 淺綠色背景
+          >
+            <div className="d-flex align-items-center">
+              <img
+                src="/dollar icon.webp"
+                alt="Dollar Icon"
+                className="img-fluid rounded"
+                style={{ width: "100px", height: "auto" }}
+              />
+              <span className="ms-3 fs-4 font-weight-bold"> {userName || '使用者'}的記帳本</span>
             </div>
-    
-            <h2 className="mb-4">您好，{userName || '使用者'}，請選擇日期，紀錄您的帳務~</h2>
-    
-            <div className="mb-4">
-                <DatePicker
-                    selected={selectedDate}
-                    onChange={(date) => setSelectedDate(date)}
-                    dateFormat="yyyy/MM/dd"
-                    inline
-                />
+      
+            <div className="d-flex">
+              <button
+                onClick={() => handleLogout(navigate)}
+                className="btn btn-danger me-2"
+              >
+                登出
+              </button>
+              <button
+                onClick={() => navigate('/settings')}
+                className="btn btn-secondary"
+              >
+                ⚙️ 設定
+              </button>
             </div>
+          </div>
+        </div>
+      
+        {/* 其他頁面內容 */}
+        <div className='mg-set'>
+          <h2 className="mb-4">您好，{userName || '使用者'}，現在開始紀錄您的帳務吧!!</h2>
+      
+          <div className="mb-4 d-flex justify-content-center align-items-center">
+            <DatePicker
+              selected={selectedDate}
+              onChange={(date) => setSelectedDate(date)}
+              dateFormat="yyyy/MM/dd"
+              inline
+            />
+          </div>
+        </div>
+      
     
+        <div className="d-flex justify-content-center mb-4">
             <button 
                 onClick={() => navigate('/add-recurring-transaction')} 
-                className="btn btn-primary mb-4"
+                className="btn btn-primary"
             >
                 新增重複性交易
             </button>
+        </div>
+
     
             <AddNewKind 
                 token={token} 
@@ -222,7 +247,7 @@ const TransactionPage = () => {
     
             <form className="row g-3" onSubmit={(e) => handleTransactionAdd(e, selectedDate, amount, description, type, kind, file, setFormData, transactions, setTransactions, token)}>
                 <div className="col-md-6">
-                    <label className="form-label">金額(Amount):</label>
+                    <label>金額(Amount):</label>
                     <input
                         type="number"
                         value={amount}
@@ -232,7 +257,7 @@ const TransactionPage = () => {
                     />
                 </div>
                 <div className="col-md-6">
-                    <label className="form-label">描述(Description):</label>
+                    <label>描述(Description):</label>
                     <input
                         type="text"
                         value={description}
@@ -241,7 +266,7 @@ const TransactionPage = () => {
                     />
                 </div>
                 <div className="col-md-6">
-                    <label className="form-label">種類(Type):</label>
+                    <label>種類(Type):</label>
                     <select value={type} onChange={(e) => setType(e.target.value)} className="form-select">
                         <option value="expense">支出(Expense)</option>
                         <option value="income">收入(Income)</option>
@@ -249,7 +274,7 @@ const TransactionPage = () => {
                     </select>
                 </div>
                 <div className="col-md-6">
-                    <label className="form-label">分類(Kind):</label>
+                    <label>分類(Kind):</label>
                     <select value={kind} onChange={(e) => setKind(e.target.value)} className="form-select">
                         {type === 'expense' && (
                             <>
@@ -284,7 +309,7 @@ const TransactionPage = () => {
                     </select>
                 </div>
                 <div className="col-md-6">
-                    <label className="form-label">上傳文件(File):</label>
+                    <label>上傳文件(File):</label>
                     <input
                         type="file"
                         onChange={(e) => handleFileChange(e, setFile)}

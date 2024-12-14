@@ -1,12 +1,6 @@
-.date-picker-container{
-    display: center;
-    top: 0;
-    z-index: 10;
-    background-color: white;
-    padding: 10px;
-    border: 1px solid black;
-    border-radius: 5px;
-    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+.main-container{
+    background-color: #D5E8E1;
+    color: #000000;
 }
 
 .transaction-grid {
@@ -42,7 +36,7 @@
     transform: scale(1.05);
     box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
     border-color: #007BFF;
-    background-color: #ffffff;
+    background-color: #000000;
 }
 
 .transaction-kind {
@@ -64,7 +58,6 @@ button {
     align-self: flex-end;
     padding: 5px 10px;
     background-color: red;
-    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -76,4 +69,12 @@ button:hover{
     box-shadow: 0 4px 8px rgba(230,0,0,0.3);
 }
 
+.bg-color, input[type = "text"], input[type = "number"], select
+{
+    background-color: #FFFFFF !important;
+}
 
+.mg-set
+{
+    margin-top: 150px;
+}
