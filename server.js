@@ -69,6 +69,43 @@ app.get('/export-excel/:user', async (req, res) => {
     }
 });
 
+// User Login
+app.post('/users/login', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (isMatch) { // Compare hashed password
+            return res.status(200).json({ success: true, message: 'Login successful' });
+        } else {
+            return res.status(401).json({ success: false, message: 'Invalid password' });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error during login' });
+    }
+});
+
+// User Registration
+app.post('/users/register', async (req, res) => {
+    const { email, username, password } = req.body;
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+        const isExist = await User.findOne({ email });
+        if (isExist) { // 檢查帳號是否已被註冊
+            return res.status(400).json({ success: false, message: '帳號已被註冊' });
+        }
+        const user = new User({ email, username, password: hashedPassword }); // Save hashed password
+        await user.save();
+        res.status(200).json({ success: true, message: 'Registration successful' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error registering user' });
+    }
+});
+
 // Express middleware
 app.use(require('express-session')({ secret: 'your-secret', resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
