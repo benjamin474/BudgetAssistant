@@ -180,7 +180,7 @@ const TransactionPage = () => {
     );
 
     return (
-        <div className="container py-4 main-container" style={{ paddingTop: '100px' }}>
+        <div className="container py-4 main-container" >
         {/* 頁面頂端 */}
         <div className="fixed-top">
           <div
@@ -218,7 +218,7 @@ const TransactionPage = () => {
         <div className='mg-set'>
           <h2 className="mb-4">您好，{userName || '使用者'}，現在開始紀錄您的帳務吧!!</h2>
       
-          <div className="mb-4 d-flex justify-content-center align-items-center">
+          <div className="mb-4 d-flex justify-content-center">
             <DatePicker
               selected={selectedDate}
               onChange={(date) => setSelectedDate(date)}
@@ -238,13 +238,14 @@ const TransactionPage = () => {
             </button>
         </div>
 
-    
+            <div className="d-flex justify-content-center newkind-m">
             <AddNewKind 
                 token={token} 
                 onKindAdded={(newKind) => handleKindAdded(newKind, customKinds, setCustomKinds, setKind, setType)} 
                 onKindDeleted={(kindId) => handleKindDeleted(kindId, customKinds, setCustomKinds)} 
             />
-    
+    </div>
+
             <form className="row g-3" onSubmit={(e) => handleTransactionAdd(e, selectedDate, amount, description, type, kind, file, setFormData, transactions, setTransactions, token)}>
                 <div className="col-md-6">
                     <label>金額(Amount):</label>
@@ -316,12 +317,12 @@ const TransactionPage = () => {
                         className="form-control"
                     />
                 </div>
-                <div className="col-12">
-                    <button type="submit" className="btn btn-success w-100">記帳</button>
+                <div className="col-12 d-flex justify-content-center">
+                    <button type="submit" className="btn btn-success w-50">記帳</button>
                 </div>
             </form>
     
-            <div className="form-check form-switch mt-4">
+            <div className="form-check form-switch mt-4 d-flex justify-content-center">
                 <input
                     type="checkbox"
                     className="form-check-input"
@@ -329,50 +330,58 @@ const TransactionPage = () => {
                     onChange={() => setEnableQuickSearchFlag(!enableQuickSearchFlag)}
                     id="quick-search-checkbox"
                 />
-                <label className="form-check-label" htmlFor="quick-search-checkbox">
+                <label className="form-check-label ms-2" htmlFor="quick-search-checkbox">
                     {enableQuickSearchFlag ? '範圍查詢' : '快速查詢'}
                 </label>
             </div>
+
     
-            {enableQuickSearchFlag && (
-                <div className="row align-items-center mt-3">
+            <div className="d-flex justify-content-center">
+                {enableQuickSearchFlag && (
+                    <div className="row align-items-center mt-3 text-center">
                     <div className="col">
                         <DatePicker
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
-                            dateFormat="yyyy/MM/dd"
-                            className="form-control"
+                        selected={startDate}
+                        onChange={(date) => setStartDate(date)}
+                        dateFormat="yyyy/MM/dd"
+                        className="form-control"
                         />
                     </div>
-                    <div className="col text-center">To</div>
+                    <div className="col">To</div>
                     <div className="col">
                         <DatePicker
-                            selected={endDate}
-                            onChange={(date) => setEndDate(date)}
-                            dateFormat="yyyy/MM/dd"
-                            className="form-control"
+                        selected={endDate}
+                        onChange={(date) => setEndDate(date)}
+                        dateFormat="yyyy/MM/dd"
+                        className="form-control"
                         />
                     </div>
                     <h3 className="mt-3">以下是您從 {formatDate(startDate)} 到 {formatDate(endDate)} 的帳務~</h3>
-                </div>
-            )}
-    
-            {!enableQuickSearchFlag && (
-                <div className="mt-3">
+                    </div>
+                )}
+
+                {!enableQuickSearchFlag && (
+                    <div className="mt-3 text-center">
                     <DatePicker
                         selected={quickSearchCurrentDay}
                         onChange={(date) => setQuickSearchCurrentDay(date)}
                         dateFormat="yyyy/MM/dd"
                         inline
                     />
-                    <select value={selectedDateForQuickSearch} onChange={(e) => setSelectedDateForQuickSearch(e.target.value)} className="form-select mt-3">
+                    <select
+                        value={selectedDateForQuickSearch}
+                        onChange={(e) => setSelectedDateForQuickSearch(e.target.value)}
+                        className="form-select mt-3"
+                    >
                         <option value="currentDay">當日</option>
                         <option value="currentWeek">當周</option>
                         <option value="currentMonth">當月</option>
                         <option value="currentYear">當年</option>
                     </select>
-                </div>
-            )}
+                    </div>
+                )}
+            </div>
+
     
             <div className="transaction-grid mt-4">
                 {filteredTransactions.sort((a, b) => new Date(a.date) - new Date(b.date)).map(transaction => (
@@ -404,7 +413,7 @@ const TransactionPage = () => {
             <h3>您總共花費：{expenseTotal}元</h3>
             <h2>總預算：{budgetTotal}元</h2>
             <h2>淨值：{netTotal}元</h2>
-            <h1>預算剩餘：{remainingBudget}元</h1>
+            <h2 className='fw-bold'>預算剩餘：{remainingBudget}元</h2>
     
             <div className="mt-4">
                 <select value={selectedChart} onChange={(e) => setSelectedChart(e.target.value)} className="form-select mb-3">

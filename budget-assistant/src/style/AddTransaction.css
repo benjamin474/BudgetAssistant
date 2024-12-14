@@ -1,6 +1,5 @@
 .main-container{
     background-color: #D5E8E1;
-    color: #000000;
 }
 
 .transaction-grid {
@@ -77,4 +76,9 @@ button:hover{
 .mg-set
 {
     margin-top: 150px;
+}
+
+.newkind-m
+{
+    margin-right: 245px;
 }
