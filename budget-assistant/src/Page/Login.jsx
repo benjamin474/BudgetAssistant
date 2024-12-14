@@ -35,9 +35,8 @@ const Login = () => {
             </div>
 
             <div className="login-container">
-                <h2 className='login-header'>歡迎來到記帳助手~</h2>
-                <h2 className="login-header">Log In</h2>
-
+                <h2 className='login-header'>歡迎來到記帳助手</h2>
+                
                 <form onSubmit={(e) => handleSubmit(e, formData, navigate)} className="login-form">
                     <div className="form-group">
                         <label htmlFor="email" className="form-label">Email/Username:</label>
@@ -78,14 +77,14 @@ const Login = () => {
 
                 {/* Google Login Button */}
                 <div className="google-login-container">
-                    <button className="google-login-button" onClick={handleGoogleLogin}>
-                        {/* <img
-                            src="https://i.ibb.co/xGhwbSC/360-F-518093233-b-Ylgthr8-ZLy-AUQ3-Wry-FSSSn3ru-FJLZHM.jpg"
+                    <button className="btn bg-light" onClick={handleGoogleLogin}>
+                        Login with &nbsp;    
+                        <img
+                            src="https://cdn.iconscout.com/icon/free/png-256/free-google-logo-icon-download-in-svg-png-gif-file-formats--brands-pack-logos-icons-189824.png?f=webp&w=128"
                             alt="Google Logo"
-                            className="google-logo"
+                            className="ml-4"
                             width={20}
-                        /> */}
-                        Login with Google
+                        />
                     </button>
                 </div>
 
@@ -94,11 +93,11 @@ const Login = () => {
                         <input type="checkbox" />
                         <p>Remember me</p>
                     </div>
-                    <Link to="/forgot-password" className="forgot-password">Forgot password?</Link>
+                    <Link to="/forgot-password" className="forgot-password">Forgot password ?</Link>
                 </div>
 
                 <div className="link">
-                    <span>Don't have an account?</span> <Link to="/sign-up" className="register-link">Register</Link>
+                    <span>Don't have an account ?</span> <Link to="/sign-up" className="register-link">Register</Link>
                 </div>
             </div>
         </div>
