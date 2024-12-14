@@ -25,6 +25,17 @@ require('dotenv').config();
 app.use(cors());
 app.use(bodyParser.json());
 
+app.use('/api/transactions', TransactionRouter);
+app.use('/api/users', UserRouter);
+app.use('/api/customized-kinds', CustomizedKindRouter);
+app.use('/api', otpRoutes); // Add OTP routes
+// Express middleware
+app.use(require('express-session')({ secret: 'your-secret', resave: true, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
+// Routes
+app.use('/auth', authRouter);
+
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI || process.env.DATABASE_URL, {
     useNewUrlParser: true,
@@ -32,11 +43,6 @@ mongoose.connect(process.env.MONGODB_URI || process.env.DATABASE_URL, {
 })
     .then(() => console.log("Connected to database..."))
     .catch(error => console.error("MongoDB connection error:", error));
-
-app.use('/api/transactions', TransactionRouter);
-app.use('/api/users', UserRouter);
-app.use('/api/customized-kinds', CustomizedKindRouter);
-app.use('/api', otpRoutes); // Add OTP routes
 
 // Export MongoDB data to Excel
 app.get('/export-excel/:user', async (req, res) => {
@@ -98,14 +104,6 @@ app.post('/users/register', async (req, res) => {
     }
 });
 
-// Express middleware
-app.use(require('express-session')({ secret: 'your-secret', resave: true, saveUninitialized: true }));
-app.use(passport.initialize());
-app.use(passport.session());
-
-// Routes
-app.use('/auth', authRouter);
-
 // Google OAuth2.0 savegoogleuser
 const { saveGoogleUser } = require('./services/googleUserService');
 
@@ -113,7 +111,6 @@ const { saveGoogleUser } = require('./services/googleUserService');
 app.use('/add-transaction', verifyToken, (req, res) => {
     res.json({ message: 'Welcome to the transaction page!' });
 });
-
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
