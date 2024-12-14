@@ -29,7 +29,7 @@ const Setting = () => {
             <h2>帳戶設定</h2>
             <div className="user-info">
                 <p>
-                目前用戶名稱：：{userInfo.username}
+                目前用戶名稱：{userInfo.username}
                     <button 
                         className="edit-btn"
                         onClick={() => setIsEditingUsername(!isEditingUsername)}

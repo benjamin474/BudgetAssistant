@@ -203,7 +203,7 @@ const TransactionPage = () => {
                     登出
                 </button>
             </div>
-            <h2>您好，{userName}，請選擇日期，紀錄您的帳務~</h2>
+            <h2>您好，{userName || '使用者'}，請選擇日期，紀錄您的帳務~</h2>
 
             <div className='date-picker-container'>
                 <DatePicker
