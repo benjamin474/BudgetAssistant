@@ -6,6 +6,7 @@ import { fetchCustomKinds } from '../Transaction/fetchCustomKinds';
 import { handleFileChange } from '../Transaction/handleFileChange';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import '../style/EditTransactionPage.css';
 
 const EditTransactionPage = () => {
     const { id } = useParams(); // Get the transaction ID from the URL
@@ -61,10 +62,12 @@ const EditTransactionPage = () => {
     };
 
     return (
-        <div>
-            <h1>編輯交易</h1>
-            <h2>請選擇日期，紀錄您的帳務~</h2>
-            <div className='date-picker-container'>
+        <div className="container main-container">
+            <h1 className="text-center mb-4">編輯交易</h1>
+            <h2 className="text-center mb-4">請選擇日期，紀錄您的帳務~</h2>
+
+            {/* 日期選擇器 */}
+            <div className="date-picker-container text-center mb-4">
                 <DatePicker
                     selected={selectedDate}
                     onChange={(date) => setSelectedDate(format(date, 'yyyy/MM/dd'))}
@@ -72,35 +75,57 @@ const EditTransactionPage = () => {
                     inline
                 />
             </div>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    金額(Amount):
-                    <input
-                        type="number"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        required
+
+            {/* 表單 */}
+            <form 
+                className="row g-3"
+                onSubmit={handleSubmit}
+            >
+                {/* 金額輸入框 */}
+                <div className="col-md-6">
+                    <label className="">金額 (Amount):</label>
+                    <input 
+                        type="number" 
+                        className="form-control" 
+                        value={amount} 
+                        onChange={(e) => setAmount(e.target.value)} 
+                        required 
                     />
-                </label>
-                <label>
-                    描述(Description):
-                    <input
-                        type="text"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                </div>
+
+                {/* 描述輸入框 */}
+                <div className="col-md-6">
+                    <label className="">描述 (Description):</label>
+                    <input 
+                        type="text" 
+                        className="form-control" 
+                        value={description} 
+                        onChange={(e) => setDescription(e.target.value)} 
                     />
-                </label>
-                <label>
-                    種類(Type):
-                    <select value={type} onChange={(e) => setType(e.target.value)}>
-                        <option value="expense">支出(Expense)</option>
-                        <option value="income">收入(Income)</option>
-                        <option value="budget">預算(Budget)</option>
+                </div>
+
+                {/* 種類下拉選單 */}
+                <div className="col-md-6">
+                    <label className="">種類 (Type):</label>
+                    <select 
+                        className="form-select" 
+                        value={type} 
+                        onChange={(e) => setType(e.target.value)}
+                    >
+                        <option value="expense">支出 (Expense)</option>
+                        <option value="income">收入 (Income)</option>
+                        <option value="budget">預算 (Budget)</option>
                     </select>
-                </label>
-                <label>
-                    分類(Kind):
-                    <select value={kind} onChange={(e) => setKind(e.target.value)}>
+                </div>
+
+                {/* 分類下拉選單 */}
+                <div className="col-md-6">
+                    <label className="">分類 (Kind):</label>
+                    <select 
+                        className="form-select" 
+                        value={kind} 
+                        onChange={(e) => setKind(e.target.value)}
+                    >
                         {type === 'expense' ? (
                             <>
                                 <option value="食物">食物</option>
@@ -134,18 +159,37 @@ const EditTransactionPage = () => {
                             <option value="預算">預算</option>
                         )}
                     </select>
-                </label>
-                <label>
-                    上傳文件(File):
-                    <input
-                        type="file"
-                        onChange={(e) => handleFileChange(e, setFile)}
+                </div>
+
+                {/* 上傳文件 */}
+                <div className="col-md-6">
+                    <label className="">上傳文件 (File):</label>
+                    <input 
+                        type="file" 
+                        className="form-control" 
+                        onChange={(e) => handleFileChange(e, setFile)} 
                     />
-                </label>
-                <button type="submit">更新</button>
-                <button type="button" onClick={() => navigate('/add-transaction')}>取消</button>
+                </div>
+
+                {/* 按鈕區 */}
+                <div className="col-12 text-center mt-4">
+                    <button 
+                        type="submit" 
+                        className="btn btn-primary me-3"
+                    >
+                        更新
+                    </button>
+                    <button 
+                        type="button" 
+                        className="btn btn-secondary"
+                        onClick={() => navigate('/add-transaction')}
+                    >
+                        取消
+                    </button>
+                </div>
             </form>
         </div>
+
     );
 };
 
