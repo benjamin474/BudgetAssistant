@@ -55,17 +55,7 @@ const Setting = () => {
                         {isEditingPassword ? '取消' : '修改'}
                     </button>
                 </p>
-                <p>
-                       {/* Google Login Button */}
-                       <button className="google-login-button" onClick={handleGoogleLogin}>
-                    {/* <img
-                        src="https://i.ibb.co/xGhwbSC/360-F-518093233-b-Ylgthr8-ZLy-AUQ3-Wry-FSSSn3ru-FJLZHM.jpg"
-                        alt="Google Logo"
-                        className="google-logo"
-                    /> */}
-                    綁定Google帳號
-                    </button>
-                </p>
+                
             </div>
             {isEditingUsername && (
                 <form onSubmit={(e) => handleUsernameUpdate(e, newUsername, token, setNewUsername)} className="settings-form">
