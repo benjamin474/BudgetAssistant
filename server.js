@@ -38,14 +38,6 @@ app.use('/api/users', UserRouter);
 app.use('/api/customized-kinds', CustomizedKindRouter);
 app.use('/api', otpRoutes); // Add OTP routes
 
-
-
-
-// Endpoint to send OTP
-
-// Endpoint to verify OTP and reset password
-
-
 // Export MongoDB data to Excel
 app.get('/export-excel/:user', async (req, res) => {
     const { user } = req.params;
@@ -114,16 +106,8 @@ app.use(passport.session());
 // Routes
 app.use('/auth', authRouter);
 
-
-
-
-
-
 // Google OAuth2.0 savegoogleuser
 const { saveGoogleUser } = require('./services/googleUserService');
-
-//const verifytoken part
-
 
 // Use `verifyToken` middleware on protected routes
 app.use('/add-transaction', verifyToken, (req, res) => {
