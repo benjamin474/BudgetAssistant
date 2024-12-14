@@ -7,6 +7,9 @@ const router = express.Router();
 const passport = require('passport');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
+//Root route for the homepage
+router.get('/', (req, res) => res.send('<a href="/auth/google">Login with Google</a>'));
+
 // Google login route using token from the client
 router.post('/google', async (req, res) => {
     const { token } = req.body;

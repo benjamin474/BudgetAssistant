@@ -2,6 +2,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/UserModel');
 const { generateJwt } = require('../config/jwt');
+const session = require('express-session');
 
 passport.use(
     new GoogleStrategy(
