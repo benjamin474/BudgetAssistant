@@ -80,7 +80,7 @@ app.use('/auth', authRouter);
 
 
 
-app.get('/', (req, res) => res.send('<a href="/auth/google">Login with Google</a>'));
+
 
 // Google OAuth2.0 savegoogleuser
 const { saveGoogleUser } = require('./services/googleUserService');
