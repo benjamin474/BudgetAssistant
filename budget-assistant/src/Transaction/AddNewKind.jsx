@@ -78,32 +78,38 @@ function AddNewKind({ token, onKindAdded, onKindDeleted }) {
     };
 
     return (
-        <div>
-            <h3>Custom Kinds</h3>
-            <input
-                type="text"
-                value={newKindName}
-                onChange={(e) => setNewKindName(e.target.value)}
-                placeholder="Add new kind"
-            />
-            <select
-                value={newKindType}
-                onChange={(e) => setNewKindType(e.target.value)}
-            >
-                <option value="" disabled>選擇類型</option>
-                <option value="expense">支出 (Expense)</option>
-                <option value="income">收入 (Income)</option>
-            </select>
-            <button onClick={handleAddCustomKind}>Add Kind</button>
-            <ul>
-                {customKinds.map(customKind => (
-                    <li key={customKind._id}>
-                        {customKind.name}
-                        <button onClick={() => handleDeleteCustomKind(customKind._id)}>Delete</button>
-                    </li>
-                ))}
-            </ul>
-        </div>
+            <div>
+                <h3>Custom Kinds</h3>
+                <div className="d-flex align-items-center mb-3 newkind-m">
+                    <input
+                        type="text"
+                        className="form-control"
+                        value={newKindName}
+                        onChange={(e) => setNewKindName(e.target.value)}
+                        placeholder="Add new kind"
+                    />
+                    <select
+                        className="form-select mx-2"
+                        value={newKindType}
+                        onChange={(e) => setNewKindType(e.target.value)}
+                    >
+                        <option value="" disabled>選擇類型</option>
+                        <option value="expense">支出 (Expense)</option>
+                        <option value="income">收入 (Income)</option>
+                    </select>
+                    <button className="btn bg-info w-75" onClick={handleAddCustomKind}>Add Kind</button>
+                </div>
+                <ul>
+                    {customKinds.map(customKind => (
+                        <li key={customKind._id} className="d-flex justify-content-between align-items-center">
+                            {customKind.name}
+                            <button className='btn' onClick={() => handleDeleteCustomKind(customKind._id)}>
+                                <i class="bi bi-trash3-fill"></i>
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
     );
 }
 

@@ -239,7 +239,7 @@ const TransactionPage = () => {
             </button>
         </div>
 
-            <div className="d-flex justify-content-center newkind-m">
+            <div className="container d-flex justify-content-center">
             <AddNewKind 
                 token={token} 
                 onKindAdded={(newKind) => handleKindAdded(newKind, customKinds, setCustomKinds, setKind, setType)} 
