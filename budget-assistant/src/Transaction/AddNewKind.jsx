@@ -103,7 +103,10 @@ function AddNewKind({ token, onKindAdded, onKindDeleted }) {
                     {customKinds.map(customKind => (
                         <li key={customKind._id} className="d-flex justify-content-between align-items-center">
                             {customKind.name}
-                            <button className='btn' onClick={() => handleDeleteCustomKind(customKind._id)}>
+                            <button 
+                                className='btn' 
+                                style={{ marginRight: 450 }} 
+                                onClick={() => handleDeleteCustomKind(customKind._id)}>
                                 <i class="bi bi-trash3-fill"></i>
                             </button>
                         </li>
