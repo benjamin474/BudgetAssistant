@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { handleChange } from '../Signup/handleChange';
+import { handleSubmit } from '../Signup/handleSubmit';
 import '../style/Signup.css';
 
 const Signup = () => {
@@ -12,57 +14,12 @@ const Signup = () => {
 
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleBack = () => {
-    navigate('../login');
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    if (formData.password !== formData.password2) {
-      alert('Passwords do not match');
-      return;
-    }
-
-    fetch('http://localhost:3001/users/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: formData.email,
-        username: formData.username,
-        password: formData.password
-      }),
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.success) {
-        alert('Registration successful');
-        navigate('/');
-      }else if (data.message === 'User already exists') {
-        alert('This email is already registered.');
-      }else {
-        alert('Registration failed: ' + data.message);
-      }
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-      alert('An error occurred during registration');
-    });
-  };
-
   return (
     <div className='signup-page'>
       <div className="signup-container">
         <h2>註冊帳號</h2>
         <h2>Sign Up</h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e) => handleSubmit(e, formData, navigate)}>
           <div className="form-group">
             <label htmlFor="email">電子郵件:</label>
             <input
@@ -70,7 +27,7 @@ const Signup = () => {
               id="email"
               name="email"
               value={formData.email}
-              onChange={handleChange}
+              onChange={(e) => handleChange(e, formData, setFormData)}
               placeholder="輸入您的電子郵件"
               required
               className="form-input"
@@ -84,7 +41,7 @@ const Signup = () => {
               id="username"
               name="username"
               value={formData.username}
-              onChange={handleChange}
+              onChange={(e) => handleChange(e, formData, setFormData)}
               placeholder="輸入您的用戶名"
               required
               className="form-input"
@@ -98,7 +55,7 @@ const Signup = () => {
               id="password"
               name="password"
               value={formData.password}
-              onChange={handleChange}
+              onChange={(e) => handleChange(e, formData, setFormData)}
               placeholder="輸入您的密碼"
               required
               className="form-input"
@@ -112,7 +69,7 @@ const Signup = () => {
               id="password2"
               name="password2"
               value={formData.password2}
-              onChange={handleChange}
+              onChange={(e) => handleChange(e, formData, setFormData)}
               placeholder="再次輸入您的密碼"
               required
               className="form-input"
