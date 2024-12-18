@@ -48,7 +48,7 @@ const Login = () => {
                             onChange={(e) => handleChange(e, formData, setFormData)}
                             placeholder="Enter your email or username"
                             required
-                            className="form-input"
+                            className="login-form-input"
                         />
                     </div>
 
@@ -62,7 +62,7 @@ const Login = () => {
                             onChange={(e) => handleChange(e, formData, setFormData)}
                             placeholder="Enter your password"
                             required
-                            className="form-input"
+                            className="login-form-input"
                         />
                     </div>
 

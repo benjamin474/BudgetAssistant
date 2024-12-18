@@ -30,7 +30,7 @@ const Signup = () => {
               onChange={(e) => handleChange(e, formData, setFormData)}
               placeholder="輸入您的電子郵件"
               required
-              className="form-input"
+              className="signup-form-input"
             />
           </div>
 
@@ -44,7 +44,7 @@ const Signup = () => {
               onChange={(e) => handleChange(e, formData, setFormData)}
               placeholder="輸入您的用戶名"
               required
-              className="form-input"
+              className="signup-form-input"
             />
           </div>
 
@@ -58,7 +58,7 @@ const Signup = () => {
               onChange={(e) => handleChange(e, formData, setFormData)}
               placeholder="輸入您的密碼"
               required
-              className="form-input"
+              className="signup-form-input"
             />
           </div>
 
@@ -72,7 +72,7 @@ const Signup = () => {
               onChange={(e) => handleChange(e, formData, setFormData)}
               placeholder="再次輸入您的密碼"
               required
-              className="form-input"
+              className="signup-form-input"
             />
           </div>
           <button type="submit" className="signup-button">

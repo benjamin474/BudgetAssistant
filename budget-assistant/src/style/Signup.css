@@ -66,6 +66,11 @@ form {
     transition: border-color 0.3s;
 }
   
+form .form-group input.signup-form-input {
+    background-color: #555555 !important;
+    color: #ffffff !important;
+}
+
 .signup-button {
     width: 100%;
     padding: 0.75rem;
